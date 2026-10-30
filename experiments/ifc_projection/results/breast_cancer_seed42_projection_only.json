@@ -1,0 +1,201 @@
+{
+  "configuration": {
+    "dataset": "breast_cancer",
+    "folds": 5,
+    "seeds": [
+      42
+    ],
+    "n_estimators": 2,
+    "n_trees": 50,
+    "max_layers": 5,
+    "projection_width": 16,
+    "projection_depth": 2,
+    "negative_slope": 0.1
+  },
+  "n_samples": 569,
+  "n_features": 30,
+  "records": [
+    {
+      "seed": 42,
+      "fold": 1,
+      "model": "standard",
+      "accuracy": 0.9736842105263158,
+      "macro_f1": 0.9723547005092555,
+      "roc_auc": 0.9990173599737963,
+      "log_loss": 0.07013500380096878,
+      "fit_seconds": 2.1306597090006107,
+      "predict_seconds": 0.2128197080019163,
+      "n_layers": 2
+    },
+    {
+      "seed": 42,
+      "fold": 1,
+      "model": "random_projection",
+      "accuracy": 0.9824561403508771,
+      "macro_f1": 0.9814935064935065,
+      "roc_auc": 0.998689813298395,
+      "log_loss": 0.09961946176821017,
+      "fit_seconds": 2.127775542001473,
+      "predict_seconds": 0.10763099999167025,
+      "n_layers": 1
+    },
+    {
+      "seed": 42,
+      "fold": 2,
+      "model": "standard",
+      "accuracy": 0.956140350877193,
+      "macro_f1": 0.9526381387619444,
+      "roc_auc": 0.9867343596462496,
+      "log_loss": 0.13139667358911927,
+      "fit_seconds": 2.4941914579976583,
+      "predict_seconds": 0.3180123340134742,
+      "n_layers": 3
+    },
+    {
+      "seed": 42,
+      "fold": 2,
+      "model": "random_projection",
+      "accuracy": 0.9473684210526315,
+      "macro_f1": 0.942866688940862,
+      "roc_auc": 0.990501146413364,
+      "log_loss": 0.1351022871858822,
+      "fit_seconds": 1.7909306249930523,
+      "predict_seconds": 0.10865029199339915,
+      "n_layers": 1
+    },
+    {
+      "seed": 42,
+      "fold": 3,
+      "model": "standard",
+      "accuracy": 0.9649122807017544,
+      "macro_f1": 0.9619111259605746,
+      "roc_auc": 0.9821428571428572,
+      "log_loss": 0.12956034881378245,
+      "fit_seconds": 2.3503860420023557,
+      "predict_seconds": 0.32085199998982716,
+      "n_layers": 3
+    },
+    {
+      "seed": 42,
+      "fold": 3,
+      "model": "random_projection",
+      "accuracy": 0.9649122807017544,
+      "macro_f1": 0.9619111259605746,
+      "roc_auc": 0.9826388888888888,
+      "log_loss": 0.1307942261538061,
+      "fit_seconds": 2.75288083300984,
+      "predict_seconds": 0.3225705420045415,
+      "n_layers": 3
+    },
+    {
+      "seed": 42,
+      "fold": 4,
+      "model": "standard",
+      "accuracy": 0.956140350877193,
+      "macro_f1": 0.9539245008487591,
+      "roc_auc": 0.9957010582010583,
+      "log_loss": 0.11682729750340032,
+      "fit_seconds": 1.6184667909983546,
+      "predict_seconds": 0.10710516601102427,
+      "n_layers": 1
+    },
+    {
+      "seed": 42,
+      "fold": 4,
+      "model": "random_projection",
+      "accuracy": 0.956140350877193,
+      "macro_f1": 0.9539245008487591,
+      "roc_auc": 0.9953703703703703,
+      "log_loss": 0.1243525592922557,
+      "fit_seconds": 1.9447197499976028,
+      "predict_seconds": 0.10988637499394827,
+      "n_layers": 1
+    },
+    {
+      "seed": 42,
+      "fold": 5,
+      "model": "standard",
+      "accuracy": 0.9911504424778761,
+      "macro_f1": 0.9904794001179543,
+      "roc_auc": 0.9939637826961771,
+      "log_loss": 0.06493020100160225,
+      "fit_seconds": 2.629143917001784,
+      "predict_seconds": 0.5342154999962077,
+      "n_layers": 5
+    },
+    {
+      "seed": 42,
+      "fold": 5,
+      "model": "random_projection",
+      "accuracy": 0.9734513274336283,
+      "macro_f1": 0.9714382003538631,
+      "roc_auc": 0.9792085848423876,
+      "log_loss": 0.3668406494935048,
+      "fit_seconds": 2.4856315000070026,
+      "predict_seconds": 0.21577741600049194,
+      "n_layers": 2
+    }
+  ],
+  "summary": {
+    "standard": {
+      "accuracy": {
+        "mean": 0.9684055270920664,
+        "std": 0.013101660507079888
+      },
+      "macro_f1": {
+        "mean": 0.9662615732396975,
+        "std": 0.01400255014135329
+      },
+      "roc_auc": {
+        "mean": 0.9915118835320277,
+        "std": 0.006172464021716134
+      },
+      "log_loss": {
+        "mean": 0.1025699049417746,
+        "std": 0.02909127023156436
+      },
+      "fit_seconds": {
+        "mean": 2.2445695834001524,
+        "std": 0.3539451334297088
+      },
+      "predict_seconds": {
+        "mean": 0.2986009416024899,
+        "std": 0.1417146315587559
+      },
+      "n_layers": {
+        "mean": 2.8,
+        "std": 1.32664991614216
+      }
+    },
+    "random_projection": {
+      "accuracy": {
+        "mean": 0.9648657040832168,
+        "std": 0.012372754323960556
+      },
+      "macro_f1": {
+        "mean": 0.962326804519513,
+        "std": 0.013415271839098002
+      },
+      "roc_auc": {
+        "mean": 0.9892817607626812,
+        "std": 0.0073846616806390155
+      },
+      "log_loss": {
+        "mean": 0.17134183677873177,
+        "std": 0.09851831376025477
+      },
+      "fit_seconds": {
+        "mean": 2.2203876500017943,
+        "std": 0.35296073999411576
+      },
+      "predict_seconds": {
+        "mean": 0.1729031249968102,
+        "std": 0.08555527824209161
+      },
+      "n_layers": {
+        "mean": 1.6,
+        "std": 0.8
+      }
+    }
+  }
+}

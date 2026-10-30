@@ -13,3 +13,7 @@ Thumbs.db
 # Virtual environments
 venv/
 .env/
+
+# Local checkout used only by archived scripts; the former Git link had no
+# .gitmodules mapping. Active dependencies are ignored in their experiment.
+legacy/deep_forest_py310/

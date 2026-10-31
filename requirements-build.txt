@@ -1,0 +1,5 @@
+# Build requirements for the deep-forest-py310 source distribution.
+setuptools>=61,<70
+wheel>=0.40
+Cython>=3.0,<3.1
+numpy==2.3.5

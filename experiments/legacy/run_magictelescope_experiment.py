@@ -14,7 +14,6 @@ Experimental Suite:
 3. Transformer-Augmented Deep Forest: Inter-Layer Transformer Attention Module (ITAM) with Multi-Head Self-Attention
 """
 
-import sys
 import os
 import json
 import time
@@ -24,7 +23,6 @@ import pandas as pd
 from scipy import stats
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, os.path.join(SCRIPT_DIR, "deep_forest_py310"))
 
 from sklearn.datasets import fetch_openml
 from sklearn.model_selection import StratifiedKFold, train_test_split

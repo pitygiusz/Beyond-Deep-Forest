@@ -1,6 +1,7 @@
 """A modern, small adaptation of hiDF's interaction feature construction.
 
-The source method is in ``upstream/hiDF/hiDF/hiDF_utils_threshold.py``:
+The source method is in
+``https://github.com/lyushenhuan/chen2021improving/blob/e1d8d31a8628819d73e75741880d0850c39dfbd1/hiDF/hiDF_utils_threshold.py``:
 bootstrap forests -> signed root-to-leaf rules -> random intersection trees
 -> stability filtering -> activated linear-combination (ALC) features.
 The cloned implementation cannot be imported under the current Python 3.12

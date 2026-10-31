@@ -1,22 +1,16 @@
 """Deep Forest with a fixed random nonlinear input map for each forest.
 
-The cascade, out-of-bag probabilities, and stopping rule come from a build of
-the fresh ``upstream/deep_forest_py310`` checkout. Each base forest sees the
-original layer input plus a distinct untrained random projection of that input.
+The cascade, out-of-bag probabilities, and stopping rule come from the
+``deep-forest-py310`` package. Each base forest sees the original layer input
+plus a distinct untrained random projection of that input.
 """
 
 from __future__ import annotations
-
-import sys
-from pathlib import Path
 
 import numpy as np
 from sklearn.random_projection import GaussianRandomProjection
 
 from interaction_features import StableInteractionFeatures
-
-EXPERIMENT_ROOT = Path(__file__).resolve().parent
-sys.path.insert(0, str(EXPERIMENT_ROOT / ".build" / "deep_forest_py310"))
 
 from deepforest import CascadeForestClassifier
 from deepforest._binner import Binner

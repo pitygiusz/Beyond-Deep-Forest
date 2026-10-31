@@ -14,17 +14,12 @@ Between cascade levels, an Inter-Layer Transformer Attention Module (ITAM) is in
    context-aware class distributions for the subsequent cascade layer.
 """
 
-import sys
-import os
 import time
 import numpy as np
 import torch
 import torch.nn as nn
 from sklearn.base import is_classifier, ClassifierMixin
 from sklearn.metrics import accuracy_score
-
-# Ensure local deepforest package is on sys.path
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "deep_forest_py310")))
 
 from deepforest import CascadeForestClassifier
 from deepforest._layer import ClassificationCascadeLayer, _build_estimator

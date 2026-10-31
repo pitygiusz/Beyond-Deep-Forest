@@ -1,0 +1,5 @@
+# NumPy 2.3 still accepts the percentile keyword used by deep-forest-py310 0.1.9.
+numpy==2.3.5
+scipy==1.16.2
+scikit-learn==1.5.2
+deep-forest-py310==0.1.9

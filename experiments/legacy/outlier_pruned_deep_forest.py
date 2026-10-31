@@ -13,15 +13,10 @@ The 2 outlier forests exhibiting the largest divergence are removed from the Aug
 passing only the (M - 2) consensus forests' probability vectors to the subsequent layer.
 """
 
-import sys
-import os
 import time
 import numpy as np
 from sklearn.base import is_classifier, ClassifierMixin
 from sklearn.metrics import accuracy_score
-
-# Ensure the local deepforest package is on sys.path
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "deep_forest_py310")))
 
 from deepforest import CascadeForestClassifier
 from deepforest._layer import ClassificationCascadeLayer, _build_estimator

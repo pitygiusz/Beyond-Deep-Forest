@@ -1,7 +1,3 @@
-import sys
-import os
-sys.path.insert(0, os.path.abspath('deep_forest_py310'))
-
 from deepforest import CascadeForestClassifier
 from sklearn.datasets import make_classification
 from sklearn.model_selection import train_test_split

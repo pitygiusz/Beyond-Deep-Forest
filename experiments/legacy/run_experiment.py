@@ -19,7 +19,6 @@ Evaluations:
   * Detailed layer-by-layer outlier diagnostics
 """
 
-import sys
 import os
 import json
 import time
@@ -28,9 +27,7 @@ import numpy as np
 import pandas as pd
 from scipy import stats
 
-# Ensure path to deep_forest_py310
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, os.path.join(SCRIPT_DIR, "deep_forest_py310"))
 
 from sklearn.datasets import load_breast_cancer, load_digits
 from sklearn.model_selection import StratifiedKFold

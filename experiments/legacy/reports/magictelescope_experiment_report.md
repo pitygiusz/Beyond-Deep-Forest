@@ -108,9 +108,6 @@ $$\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)
 
 ## 6. Recommendations & Next Steps
 
-1. **Hybrid Architecture (Prune + Attention)**:
-   Combine both modifications: First prune the outlier forests from layer $t$, then pass the remaining clean forest tokens through the Transformer Attention Module. This yields maximum parameter efficiency and noise reduction.
-2. **Dynamic Temperature Scaling**:
-   Introduce a learned temperature parameter in the Transformer module to dynamically adjust entropy based on cascade depth.
-3. **Manuscript / Report Ready**:
-   All three experimental scripts ([`run_experiment.py`](file:///Users/piotrjurczyk/Documents/DS/EL/experiments/run_experiment.py), [`run_transformer_experiment.py`](file:///Users/piotrjurczyk/Documents/DS/EL/experiments/run_transformer_experiment.py), [`run_magictelescope_experiment.py`](file:///Users/piotrjurczyk/Documents/DS/EL/experiments/run_magictelescope_experiment.py)) and JSON result artifacts are self-contained and reproducible.
+1. **Hybrid Architecture (Prune + Attention)**: Combine both modifications: First prune the outlier forests from layer $t$, then pass the remaining clean forest tokens through the Transformer Attention Module. This yields maximum parameter efficiency and noise reduction.
+2. **Dynamic Temperature Scaling**: Introduce a learned temperature parameter in the Transformer module to dynamically adjust entropy based on cascade depth.
+3. **Manuscript / Report Ready**: All three experimental scripts ([`run_experiment.py`](file:///Users/piotrjurczyk/Documents/DS/EL/experiments/run_experiment.py), [`run_transformer_experiment.py`](file:///Users/piotrjurczyk/Documents/DS/EL/experiments/run_transformer_experiment.py), [`run_magictelescope_experiment.py`](file:///Users/piotrjurczyk/Documents/DS/EL/experiments/run_magictelescope_experiment.py)) and JSON result artifacts are self-contained and reproducible.

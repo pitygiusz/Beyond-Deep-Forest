@@ -125,8 +125,7 @@ graph TD
 ```
 
 ### 1. The Representation Plateau Problem:
-In standard gcForest, early stopping frequently terminates at layer 1 or 2 because scalar class probabilities stop changing enough to satisfy the tolerance criteria. 
-**The Transformer attention mechanism broke this barrier**, allowing cascades to grow sustainably up to **3, 4, and 6 layers** because self-attention continuously creates new non-linear contextual feature representations.
+In standard gcForest, early stopping frequently terminates at layer 1 or 2 because scalar class probabilities stop changing enough to satisfy the tolerance criteria. **The Transformer attention mechanism broke this barrier**, allowing cascades to grow sustainably up to **3, 4, and 6 layers** because self-attention continuously creates new non-linear contextual feature representations.
 
 ### 2. Noise & Regularization:
 On small datasets (like Breast Cancer, $N=569$), introducing neural parameters ($d_{\text{token}}=16$) can occasionally lead to fold-level variance if not heavily regularized. This explains why the Outlier Pruning approach (which uses pure closed-form tree statistics) was more uniform on small datasets, while the Transformer approach excelled in expressiveness on multi-class and deeper architectures.

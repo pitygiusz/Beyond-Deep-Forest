@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import sys
 from pathlib import Path
 from time import perf_counter
 
@@ -14,7 +13,6 @@ from sklearn.metrics import accuracy_score, f1_score, log_loss, roc_auc_score
 from sklearn.model_selection import StratifiedKFold
 
 EXPERIMENT_ROOT = Path(__file__).resolve().parent
-sys.path.insert(0, str(EXPERIMENT_ROOT / ".build" / "deep_forest_py310"))
 
 from deepforest import CascadeForestClassifier
 from random_projected_deep_forest import RandomProjectedCascadeForestClassifier

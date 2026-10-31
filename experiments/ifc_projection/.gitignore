@@ -1,4 +1,2 @@
-upstream/
-.build/
 results/latest.json
 __pycache__/

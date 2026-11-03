@@ -1,0 +1,19 @@
+[project]
+name = "beyond-deep-forest-experiments"
+version = "0.1.0"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "numpy==2.3.5",
+    "scipy==1.16.2",
+    "scikit-learn==1.5.2",
+    "deep-forest-py310==0.1.9",
+]
+
+[project.optional-dependencies]
+legacy = [
+    "pandas>=2.2,<3",
+    "torch>=2.5,<3",
+]
+
+[tool.uv]
+package = false

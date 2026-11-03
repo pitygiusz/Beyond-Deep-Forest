@@ -14,8 +14,7 @@ from sklearn.model_selection import StratifiedKFold
 
 EXPERIMENT_ROOT = Path(__file__).resolve().parent
 
-from deepforest import CascadeForestClassifier
-from random_projected_deep_forest import RandomProjectedCascadeForestClassifier
+from .models import DeepForestVariantClassifier
 
 
 def evaluate(model, X_train, y_train, X_test, y_test):
@@ -32,12 +31,6 @@ def evaluate(model, X_train, y_train, X_test, y_test):
         auc = roc_auc_score(y_test, probability[:, 1])
     else:
         auc = roc_auc_score(y_test, probability, multi_class="ovr", average="macro")
-    interaction_counts = []
-    if getattr(model, "use_interactions", False):
-        interaction_counts = [
-            len(model[layer].interaction_generator_.interactions_)
-            for layer in range(model.n_layers_)
-        ]
     return {
         "accuracy": float(accuracy_score(y_test, predicted)),
         "macro_f1": float(f1_score(y_test, predicted, average="macro")),
@@ -46,13 +39,17 @@ def evaluate(model, X_train, y_train, X_test, y_test):
         "fit_seconds": fit_seconds,
         "predict_seconds": predict_seconds,
         "n_layers": int(model.n_layers_),
-        "interaction_counts_by_layer": interaction_counts,
+        "interaction_counts_by_layer": model.interaction_counts_by_layer_,
     }
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--dataset", choices=("breast_cancer", "digits"), default="breast_cancer")
+    parser.add_argument(
+        "--variants", nargs="+", choices=DeepForestVariantClassifier.VARIANTS,
+        default=list(DeepForestVariantClassifier.VARIANTS),
+    )
     parser.add_argument("--folds", type=int, default=5)
     parser.add_argument("--seeds", type=int, nargs="+", default=[42])
     parser.add_argument("--n-estimators", type=int, default=2, help="RF/ExtraTrees pairs per layer")
@@ -95,9 +92,14 @@ def main():
         rit_trees=args.rit_trees,
         rit_depth=args.rit_depth,
         stability_threshold=args.stability_threshold,
-        use_interactions=True,
     )
-    model_names = ("standard", "random_projection", "ifc", "ifc_random_projection")
+    output_names = {
+        "bare": "standard",
+        "projection": "random_projection",
+        "ifc": "ifc",
+        "combined": "ifc_random_projection",
+    }
+    model_variants = tuple((output_names[variant], variant) for variant in args.variants)
 
     for seed in args.seeds:
         folds = StratifiedKFold(n_splits=args.folds, shuffle=True, random_state=seed)
@@ -105,35 +107,20 @@ def main():
             X_train, X_test = X[train_index], X[test_index]
             y_train, y_test = y[train_index], y[test_index]
             forest_seed = seed * 1000 + fold
-            models = {
-                "standard": CascadeForestClassifier(**forest_args, random_state=forest_seed),
-                "random_projection": RandomProjectedCascadeForestClassifier(
-                    **forest_args,
-                    random_state=forest_seed,
-                    **projection_args,
-                ),
-                "ifc": RandomProjectedCascadeForestClassifier(
+            for name, variant in model_variants:
+                model = DeepForestVariantClassifier(
+                    variant=variant,
                     **forest_args,
                     random_state=forest_seed,
                     **projection_args,
                     **interaction_args,
-                    use_projection=False,
-                ),
-                "ifc_random_projection": RandomProjectedCascadeForestClassifier(
-                    **forest_args,
-                    random_state=forest_seed,
-                    **projection_args,
-                    **interaction_args,
-                    use_projection=True,
-                ),
-            }
-            for name, model in models.items():
+                )
                 metrics = evaluate(model, X_train, y_train, X_test, y_test)
                 records.append({"seed": seed, "fold": fold, "model": name, **metrics})
                 print(f"seed={seed} fold={fold} {name}: accuracy={metrics['accuracy']:.4f} layers={metrics['n_layers']}")
 
     summary = {}
-    for name in model_names:
+    for name, _ in model_variants:
         selected = [record for record in records if record["model"] == name]
         summary[name] = {
             metric: {"mean": float(np.mean([r[metric] for r in selected])),

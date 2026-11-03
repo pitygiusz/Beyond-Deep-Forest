@@ -1,9 +1,11 @@
 import numpy as np
+from sklearn.base import clone
 from sklearn.datasets import load_breast_cancer, make_classification
 from sklearn.model_selection import StratifiedKFold
 
-from interaction_features import StableInteractionFeatures
-from random_projected_deep_forest import (
+from experiments.ifc_projection import DeepForestVariantClassifier
+from experiments.ifc_projection.interaction_features import StableInteractionFeatures
+from experiments.ifc_projection.random_projected_deep_forest import (
     FixedRandomNonlinearMap,
     RandomProjectedCascadeForestClassifier,
 )
@@ -83,3 +85,16 @@ def test_ifc_selects_features_on_breast_cancer_training_fold():
     seed = int(np.random.SeedSequence([42001, 0, 999]).generate_state(1)[0])
     extractor = StableInteractionFeatures(random_state=seed).fit(X[train_index], y[train_index])
     assert len(extractor.interactions_) > 0
+
+
+def test_public_estimator_is_cloneable_and_predicts():
+    X, y = make_classification(n_samples=100, n_features=8, n_informative=5, random_state=3)
+    estimator = DeepForestVariantClassifier(
+        variant="combined", n_estimators=2, n_trees=30, max_layers=2,
+        projection_width=4, interaction_limit=4, interaction_bootstraps=2,
+        interaction_trees=5, rit_trees=8, random_state=7, n_jobs=1,
+    )
+    model = clone(estimator).fit(X, y)
+    assert model.get_params()["variant"] == "combined"
+    assert model.predict(X[:5]).shape == (5,)
+    assert model.predict_proba(X[:5]).shape == (5, 2)

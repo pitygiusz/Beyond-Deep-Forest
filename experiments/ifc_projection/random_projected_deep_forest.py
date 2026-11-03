@@ -10,7 +10,7 @@ from __future__ import annotations
 import numpy as np
 from sklearn.random_projection import GaussianRandomProjection
 
-from interaction_features import StableInteractionFeatures
+from .interaction_features import StableInteractionFeatures
 
 from deepforest import CascadeForestClassifier
 from deepforest._binner import Binner

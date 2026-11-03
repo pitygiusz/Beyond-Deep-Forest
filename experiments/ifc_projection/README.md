@@ -1,6 +1,6 @@
 # IFC and fixed random projections in Deep Forest
 
-This experiment compares four architectures on identical stratified folds: standard Deep Forest, fixed random nonlinear projections, an adaptation of hiDF-style interaction feature concatenation (IFC), and both changes together. The implementation imports the published `deep-forest-py310==0.1.9` package specified in [requirements.txt](../../requirements.txt); it needs no cloned repository or local build copy.
+This experiment compares four architectures on identical stratified folds: standard Deep Forest, fixed random nonlinear projections, an adaptation of hiDF-style interaction feature concatenation (IFC), and both changes together. The implementation imports the published `deep-forest-py310==0.1.9` package specified in [pyproject.toml](../../pyproject.toml); it needs no cloned repository or local build copy.
 
 ## Methods
 
@@ -12,19 +12,40 @@ This is an adaptation of hiDF's feature generation, not a run of its original cl
 
 ## Setup and run
 
-Create the virtual environment and install dependencies using the [repository setup instructions](../../README.md#environment). From this directory, run the default five-fold comparison with:
+Sync the uv-managed project environment using the [repository setup instructions](../../README.md#environment).
+From the repository root, run the default five-fold comparison with:
 
 ```bash
-../../.venv/bin/python run_experiment.py
+uv run -m experiments.ifc_projection.run_experiment
 ```
 
-To compare multiple split seeds, use `--seeds 42 43 44`. For a small diagnostic run, use:
+To compare multiple split seeds, use `--seeds 42 43 44`.
+To compare only two model variants, use `--variants bare combined`.
+For a small diagnostic run, use:
 
 ```bash
-../../.venv/bin/python run_experiment.py --folds 2 --n-trees 30 --max-layers 2 --interaction-bootstraps 2 --rit-trees 8
+uv run -m experiments.ifc_projection.run_experiment --folds 2 --n-trees 30 --max-layers 2 --interaction-bootstraps 2 --rit-trees 8
 ```
 
-The defaults are two RF/ExtraTrees pairs per layer, 50 trees per forest, at most five layers, 16 projected features per forest, at most six IFC features per layer, three bootstrap forests, and 20 random intersection trees per bootstrap. The runner writes per-fold records and aggregate metrics to the ignored `results/latest.json`; the recorded outputs and their provenance are in [results/README.md](results/README.md). The workspace's VS Code task runs the same default comparison after the virtual environment is installed.
+The defaults are two RF/ExtraTrees pairs per layer, 50 trees per forest, at most five layers, 16 projected features per forest, at most six IFC features per layer, three bootstrap forests, and 20 random intersection trees per bootstrap.
+The runner writes per-fold records and aggregate metrics to the ignored `results/latest.json`; the recorded outputs and their provenance are in [results/README.md](results/README.md).
+
+## Reusable classifier
+
+Import [DeepForestVariantClassifier](models.py) and choose `variant="bare"`, `"projection"`, `"ifc"`, or `"combined"`.
+The class supports scikit-learn's `get_params`, `set_params`, `clone`, `fit`, `predict`, `predict_proba`, and `score` interfaces.
+
+```python
+from experiments.ifc_projection import DeepForestVariantClassifier
+
+model = DeepForestVariantClassifier(variant="combined", n_trees=50, random_state=42)
+model.fit(X_train, y_train)
+predictions = model.predict(X_test)
+probabilities = model.predict_proba(X_test)
+```
+
+The runnable [smoke script](smoke_experiment.py) trains a small model with this API and accepts `--variant all` to try all four variants.
+Run it from the repository root with `uv run -m experiments.ifc_projection.smoke_experiment --variant all`.
 
 ## Interpretation
 

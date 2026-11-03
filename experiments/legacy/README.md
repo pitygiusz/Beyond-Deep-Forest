@@ -12,12 +12,12 @@ This directory preserves the earlier outlier-pruned and transformer-augmented De
 
 ## Run an archived study
 
-The scripts import the published `deep-forest-py310` package directly and no longer require a local Deep Forest checkout. Create the project virtual environment using the [root setup guide](../../README.md#environment), then install the [legacy requirements](requirements.txt) for PyTorch and pandas. For example, from the repository root run:
+The scripts import the published `deep-forest-py310` package directly and no longer require a local Deep Forest checkout. Use `uv sync --extra legacy` from the repository root to include PyTorch and pandas, then run:
 
 ```bash
-.venv/bin/python experiments/legacy/run_experiment.py --n_trees 50
-.venv/bin/python experiments/legacy/run_transformer_experiment.py --n_trees 50 --d_token 16 --n_heads 2 --transformer_epochs 15
-.venv/bin/python experiments/legacy/run_magictelescope_experiment.py --n_trees 35 --n_estimators 4
+uv run --extra legacy python experiments/legacy/run_experiment.py --n_trees 50
+uv run --extra legacy python experiments/legacy/run_transformer_experiment.py --n_trees 50 --d_token 16 --n_heads 2 --transformer_epochs 15
+uv run --extra legacy python experiments/legacy/run_magictelescope_experiment.py --n_trees 35 --n_estimators 4
 ```
 
 The MAGIC runner fetches its dataset through OpenML, so that run also needs network access.

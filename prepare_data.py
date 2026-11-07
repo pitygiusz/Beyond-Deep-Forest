@@ -5,9 +5,12 @@ Usage:  X_train, X_val, X_test, y_train, y_val, y_test = get_split("adult")
 import pickle
 from pathlib import Path
 
+import numpy as np
 import openml
 import pandas as pd
 from sklearn.compose import ColumnTransformer
+from sklearn.datasets import fetch_olivetti_faces
+from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.impute import SimpleImputer
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
@@ -16,6 +19,9 @@ from ucimlrepo import fetch_ucirepo
 
 RAW_DIR = Path(__file__).resolve().parent / "raw_data"
 CACHE_DIR = RAW_DIR / "cache"
+
+IMDB_PARQUET = "https://huggingface.co/datasets/stanfordnlp/imdb/resolve/main/plain_text/{}-00000-of-00001.parquet"
+TFIDF_FEATURES = 5000
 
 # name -> (source, id or path, target column)
 DATASETS = {
@@ -30,16 +36,39 @@ DATASETS = {
     "support2": ("uci", 880, "hospdead"),
     # TUNADROMD (UCI id 813) is not available via ucimlrepo or OpenML - downloaded manually
     "tuandromd": ("csv", RAW_DIR / "tuandromd.csv", "Label"),
+    "imdb": ("imdb", None, "target"),  # text; turned into 5000 tf-idf features per split
     # multiclass
+    "mnist": ("openml", 554, "target"),
+    "cifar10": ("openml", 40927, "target"),
+    "orl": ("olivetti", None, "target"),  # the ORL faces, as shipped with scikit-learn
     "satimage": ("openml", 182, "target"),
     "letter": ("openml", 6, "target"),
     "yeast": ("openml", 181, "target"),
 }
 
+# datasets whose features are raw text (no cleaning; tf-idf inside get_train_test)
+TEXT_DATASETS = {"imdb"}
+
+# datasets too large to use whole: keep a stratified random subset of this many rows
+SUBSET_ROWS = {"mnist": 5000, "cifar10": 3000, "imdb": 3000}
+
 # columns that would leak the target (other outcome columns of the same study)
 LEAKY_COLUMNS = {
     "support2": ["death", "sfdm2"],
 }
+
+
+def _load_olivetti():
+    """ORL faces: 400 images of 40 people, 64x64 pixels, cached by scikit-learn in raw_data/sklearn/."""
+    X, y = fetch_olivetti_faces(return_X_y=True, data_home=str(RAW_DIR / "sklearn"))
+    return pd.DataFrame(X, columns=[f"px{i}" for i in range(X.shape[1])]).assign(target=y)
+
+
+def _load_imdb():
+    """IMDB reviews (train + test, 50,000 total), downloaded once as Parquet; 1 = positive review."""
+    frames = [pd.read_parquet(IMDB_PARQUET.format(split)) for split in ("train", "test")]
+    df = pd.concat(frames, ignore_index=True)
+    return pd.DataFrame({"text": df["text"], "target": df["label"]})
 
 
 def load_raw(source, key):
@@ -50,6 +79,10 @@ def load_raw(source, key):
     if source == "uci":
         ds = fetch_ucirepo(id=key)
         return pd.concat([ds.data.features, ds.data.targets], axis=1)
+    if source == "olivetti":
+        return _load_olivetti()
+    if source == "imdb":
+        return _load_imdb()
     return pd.read_csv(key)
 
 
@@ -85,13 +118,17 @@ def load_dataset(name):
     cache = CACHE_DIR / f"{name}.pkl"
     if cache.exists():
         with open(cache, "rb") as f:
-            return pickle.load(f)
-    source, key, target = DATASETS[name]
-    X, y = split_target(load_raw(source, key), target, drop=LEAKY_COLUMNS.get(name, ()))
-    X = clean_features(X)
-    CACHE_DIR.mkdir(parents=True, exist_ok=True)
-    with open(cache, "wb") as f:
-        pickle.dump((X, y), f)
+            X, y = pickle.load(f)
+    else:
+        source, key, target = DATASETS[name]
+        X, y = split_target(load_raw(source, key), target, drop=LEAKY_COLUMNS.get(name, ()))
+        if name not in TEXT_DATASETS:
+            X = clean_features(X)
+        CACHE_DIR.mkdir(parents=True, exist_ok=True)
+        with open(cache, "wb") as f:
+            pickle.dump((X, y), f)
+    if name in SUBSET_ROWS and len(y) > SUBSET_ROWS[name]:
+        X, _, y, _ = train_test_split(X, y, train_size=SUBSET_ROWS[name], stratify=y, random_state=0)
     return X, y
 
 
@@ -144,6 +181,12 @@ def get_train_test(name, test_size=0.3, seed=0):
     X, y = load_dataset(name)
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=test_size, stratify=y, random_state=seed)
+
+    if name in TEXT_DATASETS:
+        # the vocabulary and idf weights are learned from the training reviews only
+        tfidf = TfidfVectorizer(max_features=TFIDF_FEATURES, dtype=np.float32)
+        return (tfidf.fit_transform(X_train["text"]).toarray(),
+                tfidf.transform(X_test["text"]).toarray(), y_train, y_test)
 
     prep = make_preprocessor(X_train)
     return prep.fit_transform(X_train), prep.transform(X_test), y_train, y_test

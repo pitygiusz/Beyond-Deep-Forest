@@ -1,5 +1,14 @@
 .DS_Store
+Thumbs.db
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints
+
+# Virtual environments
+venv/
+.env/
+.venv/
+
 __pycache__
-.venv
-.env
+
 CLAUDE.md

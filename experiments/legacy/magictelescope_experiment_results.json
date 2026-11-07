@@ -1,0 +1,398 @@
+{
+  "dataset": "MagicTelescope",
+  "n_samples": 19020,
+  "n_features": 10,
+  "n_classes": 2,
+  "n_estimators": 4,
+  "n_trees": 35,
+  "holdout_results": {
+    "standard_deep_forest": {
+      "name": "Standard Deep Forest",
+      "accuracy": 0.8848580441640379,
+      "balanced_accuracy": 0.8570059536149026,
+      "macro_f1": 0.868986840118766,
+      "roc_auc": 0.9407757156521519,
+      "log_loss": 0.29465793952922525,
+      "fit_time": 103.87666916847229,
+      "infer_time": 0.2108149528503418,
+      "n_layers": 1,
+      "pruning_report": null
+    },
+    "outlier_pruned_deep_forest": {
+      "name": "Outlier-Pruned Deep Forest",
+      "accuracy": 0.8853838065194533,
+      "balanced_accuracy": 0.85843707607316,
+      "macro_f1": 0.8698550356172638,
+      "roc_auc": 0.9402129044693935,
+      "log_loss": 0.2925425656749854,
+      "fit_time": 111.3260817527771,
+      "infer_time": 0.2272181510925293,
+      "n_layers": 1,
+      "pruning_report": [
+        {
+          "layer_idx": 0,
+          "n_total_estimators": 8,
+          "n_outliers_removed": 2,
+          "n_kept_estimators": 6,
+          "estimators": [
+            {
+              "name": "0-0-rf",
+              "divergence": 0.0949751951096765,
+              "is_outlier": false
+            },
+            {
+              "name": "0-1-rf",
+              "divergence": 0.09357150732136954,
+              "is_outlier": false
+            },
+            {
+              "name": "0-2-rf",
+              "divergence": 0.0957146793551848,
+              "is_outlier": false
+            },
+            {
+              "name": "0-3-rf",
+              "divergence": 0.09577752731430206,
+              "is_outlier": false
+            },
+            {
+              "name": "0-0-erf",
+              "divergence": 0.10207364775852638,
+              "is_outlier": true
+            },
+            {
+              "name": "0-1-erf",
+              "divergence": 0.10126212953022609,
+              "is_outlier": true
+            },
+            {
+              "name": "0-2-erf",
+              "divergence": 0.09998076111136907,
+              "is_outlier": false
+            },
+            {
+              "name": "0-3-erf",
+              "divergence": 0.1010541067680331,
+              "is_outlier": false
+            }
+          ],
+          "val_performance": 0.8797975814931651
+        }
+      ]
+    },
+    "transformer_deep_forest": {
+      "name": "Transformer-Augmented Deep Forest",
+      "accuracy": 0.8859095688748686,
+      "balanced_accuracy": 0.8617484788641216,
+      "macro_f1": 0.8712910344922215,
+      "roc_auc": 0.9405277999022885,
+      "log_loss": 0.2839088255792826,
+      "fit_time": 152.79265594482422,
+      "infer_time": 0.2855520248413086,
+      "n_layers": 1,
+      "pruning_report": null
+    }
+  },
+  "cv_summary": {
+    "standard_deep_forest": {
+      "accuracy_mean": 0.8787592008412197,
+      "accuracy_std": 0.0014360147511827345,
+      "macro_f1_mean": 0.8625016746241613,
+      "macro_f1_std": 0.0024109308558391226,
+      "roc_auc_mean": 0.9357981069133715,
+      "roc_auc_std": 0.0012517554757096728,
+      "log_loss_mean": 0.3027172306719413,
+      "log_loss_std": 0.003937973952042746,
+      "n_layers_mean": 1.6666666666666667,
+      "fit_time_mean": 103.82723315556844,
+      "raw_folds": [
+        {
+          "name": "Standard (CV)",
+          "accuracy": 0.8780757097791798,
+          "balanced_accuracy": 0.8487850986624097,
+          "macro_f1": 0.8609849114158272,
+          "roc_auc": 0.9374822323414438,
+          "log_loss": 0.3026848804915457,
+          "fit_time": 83.31977391242981,
+          "infer_time": 0.376629114151001,
+          "n_layers": 1,
+          "pruning_report": null
+        },
+        {
+          "name": "Standard (CV)",
+          "accuracy": 0.8807570977917981,
+          "balanced_accuracy": 0.857527632426281,
+          "macro_f1": 0.8659045700616895,
+          "roc_auc": 0.9344836790721891,
+          "log_loss": 0.29791047373174284,
+          "fit_time": 142.3729968070984,
+          "infer_time": 0.9261600971221924,
+          "n_layers": 3,
+          "pruning_report": null
+        },
+        {
+          "name": "Standard (CV)",
+          "accuracy": 0.8774447949526814,
+          "balanced_accuracy": 0.8490660425736201,
+          "macro_f1": 0.8606155423949671,
+          "roc_auc": 0.9354284093264814,
+          "log_loss": 0.30755633779253533,
+          "fit_time": 85.78892874717712,
+          "infer_time": 0.37418222427368164,
+          "n_layers": 1,
+          "pruning_report": null
+        }
+      ]
+    },
+    "outlier_pruned_deep_forest": {
+      "accuracy_mean": 0.8789169295478444,
+      "accuracy_std": 0.002268711778169476,
+      "macro_f1_mean": 0.8624188938822265,
+      "macro_f1_std": 0.002315124984452307,
+      "roc_auc_mean": 0.9362298927371349,
+      "roc_auc_std": 0.0010960113943744158,
+      "log_loss_mean": 0.30605547260307425,
+      "log_loss_std": 0.007072394592776188,
+      "n_layers_mean": 1.0,
+      "fit_time_mean": 987.8755726019541,
+      "raw_folds": [
+        {
+          "name": "Outlier-Pruned (CV)",
+          "accuracy": 0.8785488958990536,
+          "balanced_accuracy": 0.8509984100912553,
+          "macro_f1": 0.8620940973742568,
+          "roc_auc": 0.9369275812881632,
+          "log_loss": 0.30080620343031167,
+          "fit_time": 78.20458197593689,
+          "infer_time": 0.4112110137939453,
+          "n_layers": 1,
+          "pruning_report": [
+            {
+              "layer_idx": 0,
+              "n_total_estimators": 8,
+              "n_outliers_removed": 2,
+              "n_kept_estimators": 6,
+              "estimators": [
+                {
+                  "name": "0-0-rf",
+                  "divergence": 0.09486182742259414,
+                  "is_outlier": false
+                },
+                {
+                  "name": "0-1-rf",
+                  "divergence": 0.09530740969692841,
+                  "is_outlier": false
+                },
+                {
+                  "name": "0-2-rf",
+                  "divergence": 0.09498332513872439,
+                  "is_outlier": false
+                },
+                {
+                  "name": "0-3-rf",
+                  "divergence": 0.09508220364567824,
+                  "is_outlier": false
+                },
+                {
+                  "name": "0-0-erf",
+                  "divergence": 0.10189518157729235,
+                  "is_outlier": true
+                },
+                {
+                  "name": "0-1-erf",
+                  "divergence": 0.1006311446414538,
+                  "is_outlier": false
+                },
+                {
+                  "name": "0-2-erf",
+                  "divergence": 0.10077770423592282,
+                  "is_outlier": true
+                },
+                {
+                  "name": "0-3-erf",
+                  "divergence": 0.10022321542035639,
+                  "is_outlier": false
+                }
+              ],
+              "val_performance": 0.8757097791798107
+            }
+          ]
+        },
+        {
+          "name": "Outlier-Pruned (CV)",
+          "accuracy": 0.8818611987381704,
+          "balanced_accuracy": 0.8532444603919127,
+          "macro_f1": 0.8654027431745532,
+          "roc_auc": 0.937079707912516,
+          "log_loss": 0.3013070462390899,
+          "fit_time": 73.38775777816772,
+          "infer_time": 0.41565895080566406,
+          "n_layers": 1,
+          "pruning_report": [
+            {
+              "layer_idx": 0,
+              "n_total_estimators": 8,
+              "n_outliers_removed": 2,
+              "n_kept_estimators": 6,
+              "estimators": [
+                {
+                  "name": "0-0-rf",
+                  "divergence": 0.09520122863678493,
+                  "is_outlier": false
+                },
+                {
+                  "name": "0-1-rf",
+                  "divergence": 0.09636514602418919,
+                  "is_outlier": false
+                },
+                {
+                  "name": "0-2-rf",
+                  "divergence": 0.09577949351592298,
+                  "is_outlier": false
+                },
+                {
+                  "name": "0-3-rf",
+                  "divergence": 0.09593314139404298,
+                  "is_outlier": false
+                },
+                {
+                  "name": "0-0-erf",
+                  "divergence": 0.10254712526198147,
+                  "is_outlier": true
+                },
+                {
+                  "name": "0-1-erf",
+                  "divergence": 0.1011774221552081,
+                  "is_outlier": false
+                },
+                {
+                  "name": "0-2-erf",
+                  "divergence": 0.10225842354959236,
+                  "is_outlier": true
+                },
+                {
+                  "name": "0-3-erf",
+                  "divergence": 0.10020107019273598,
+                  "is_outlier": false
+                }
+              ],
+              "val_performance": 0.877602523659306
+            }
+          ]
+        },
+        {
+          "name": "Outlier-Pruned (CV)",
+          "accuracy": 0.8763406940063091,
+          "balanced_accuracy": 0.849034947028466,
+          "macro_f1": 0.8597598410978693,
+          "roc_auc": 0.9346823890107253,
+          "log_loss": 0.3160531681398213,
+          "fit_time": 2812.034378051758,
+          "infer_time": 0.29621124267578125,
+          "n_layers": 1,
+          "pruning_report": [
+            {
+              "layer_idx": 0,
+              "n_total_estimators": 8,
+              "n_outliers_removed": 2,
+              "n_kept_estimators": 6,
+              "estimators": [
+                {
+                  "name": "0-0-rf",
+                  "divergence": 0.0945783890064836,
+                  "is_outlier": false
+                },
+                {
+                  "name": "0-1-rf",
+                  "divergence": 0.09419609425331282,
+                  "is_outlier": false
+                },
+                {
+                  "name": "0-2-rf",
+                  "divergence": 0.09459776111535423,
+                  "is_outlier": false
+                },
+                {
+                  "name": "0-3-rf",
+                  "divergence": 0.0946556941090493,
+                  "is_outlier": false
+                },
+                {
+                  "name": "0-0-erf",
+                  "divergence": 0.10117025939800596,
+                  "is_outlier": true
+                },
+                {
+                  "name": "0-1-erf",
+                  "divergence": 0.10055756681717574,
+                  "is_outlier": false
+                },
+                {
+                  "name": "0-2-erf",
+                  "divergence": 0.10054400912808498,
+                  "is_outlier": false
+                },
+                {
+                  "name": "0-3-erf",
+                  "divergence": 0.10095654246249199,
+                  "is_outlier": true
+                }
+              ],
+              "val_performance": 0.8797318611987381
+            }
+          ]
+        }
+      ]
+    },
+    "transformer_deep_forest": {
+      "accuracy_mean": 0.8810199789695057,
+      "accuracy_std": 0.00411373346835299,
+      "macro_f1_mean": 0.8661589668995667,
+      "macro_f1_std": 0.004423846477921586,
+      "roc_auc_mean": 0.9366577273512541,
+      "roc_auc_std": 0.0009429625096955348,
+      "log_loss_mean": 0.29545446869632247,
+      "log_loss_std": 0.0036123863927887316,
+      "n_layers_mean": 1.0,
+      "fit_time_mean": 161.56182646751404,
+      "raw_folds": [
+        {
+          "name": "Transformer (CV)",
+          "accuracy": 0.8790220820189274,
+          "balanced_accuracy": 0.8559843765738531,
+          "macro_f1": 0.8640656018950164,
+          "roc_auc": 0.9372226676527615,
+          "log_loss": 0.29597714470116093,
+          "fit_time": 127.9757719039917,
+          "infer_time": 0.4711952209472656,
+          "n_layers": 1,
+          "pruning_report": null
+        },
+        {
+          "name": "Transformer (CV)",
+          "accuracy": 0.8867507886435331,
+          "balanced_accuracy": 0.8629709063833052,
+          "macro_f1": 0.8723114298229552,
+          "roc_auc": 0.93742139260466,
+          "log_loss": 0.2907920955291173,
+          "fit_time": 124.07893180847168,
+          "infer_time": 0.43923306465148926,
+          "n_layers": 1,
+          "pruning_report": null
+        },
+        {
+          "name": "Transformer (CV)",
+          "accuracy": 0.8772870662460568,
+          "balanced_accuracy": 0.8539698645979946,
+          "macro_f1": 0.8620998689807291,
+          "roc_auc": 0.9353291217963405,
+          "log_loss": 0.29959416585868914,
+          "fit_time": 232.63077569007874,
+          "infer_time": 0.3622260093688965,
+          "n_layers": 1,
+          "pruning_report": null
+        }
+      ]
+    }
+  }
+}

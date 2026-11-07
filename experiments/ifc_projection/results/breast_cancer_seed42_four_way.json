@@ -1,0 +1,440 @@
+{
+  "configuration": {
+    "dataset": "breast_cancer",
+    "folds": 5,
+    "seeds": [
+      42
+    ],
+    "n_estimators": 2,
+    "n_trees": 50,
+    "max_layers": 5,
+    "projection_width": 16,
+    "projection_depth": 2,
+    "negative_slope": 0.1,
+    "interaction_limit": 6,
+    "interaction_bootstraps": 3,
+    "interaction_trees": 10,
+    "rit_trees": 20,
+    "rit_depth": 3,
+    "stability_threshold": 0.5
+  },
+  "n_samples": 569,
+  "n_features": 30,
+  "records": [
+    {
+      "seed": 42,
+      "fold": 1,
+      "model": "standard",
+      "accuracy": 0.9736842105263158,
+      "macro_f1": 0.9723547005092555,
+      "roc_auc": 0.9990173599737963,
+      "log_loss": 0.07013500380096878,
+      "fit_seconds": 2.1422891250113025,
+      "predict_seconds": 0.2122471670008963,
+      "n_layers": 2,
+      "interaction_counts_by_layer": []
+    },
+    {
+      "seed": 42,
+      "fold": 1,
+      "model": "random_projection",
+      "accuracy": 0.9824561403508771,
+      "macro_f1": 0.9814935064935065,
+      "roc_auc": 0.998689813298395,
+      "log_loss": 0.09961946176821017,
+      "fit_seconds": 1.9720743329962716,
+      "predict_seconds": 0.11015937499178108,
+      "n_layers": 1,
+      "interaction_counts_by_layer": []
+    },
+    {
+      "seed": 42,
+      "fold": 1,
+      "model": "ifc",
+      "accuracy": 0.9736842105263158,
+      "macro_f1": 0.9723547005092555,
+      "roc_auc": 0.9980347199475925,
+      "log_loss": 0.07213636339807264,
+      "fit_seconds": 2.897326708000037,
+      "predict_seconds": 0.3198400420078542,
+      "n_layers": 3,
+      "interaction_counts_by_layer": [
+        6,
+        6,
+        6
+      ]
+    },
+    {
+      "seed": 42,
+      "fold": 1,
+      "model": "ifc_random_projection",
+      "accuracy": 0.9912280701754386,
+      "macro_f1": 0.9907067742724383,
+      "roc_auc": 0.9993449066491976,
+      "log_loss": 0.060165923382768216,
+      "fit_seconds": 3.8360957080003573,
+      "predict_seconds": 0.3249533329944825,
+      "n_layers": 3,
+      "interaction_counts_by_layer": [
+        6,
+        6,
+        6
+      ]
+    },
+    {
+      "seed": 42,
+      "fold": 2,
+      "model": "standard",
+      "accuracy": 0.956140350877193,
+      "macro_f1": 0.9526381387619444,
+      "roc_auc": 0.9867343596462496,
+      "log_loss": 0.13139667358911927,
+      "fit_seconds": 2.5019273329962743,
+      "predict_seconds": 0.31620833299530204,
+      "n_layers": 3,
+      "interaction_counts_by_layer": []
+    },
+    {
+      "seed": 42,
+      "fold": 2,
+      "model": "random_projection",
+      "accuracy": 0.9473684210526315,
+      "macro_f1": 0.942866688940862,
+      "roc_auc": 0.990501146413364,
+      "log_loss": 0.1351022871858822,
+      "fit_seconds": 1.7591936250100844,
+      "predict_seconds": 0.10915525000018533,
+      "n_layers": 1,
+      "interaction_counts_by_layer": []
+    },
+    {
+      "seed": 42,
+      "fold": 2,
+      "model": "ifc",
+      "accuracy": 0.956140350877193,
+      "macro_f1": 0.9526381387619444,
+      "roc_auc": 0.9921388797903701,
+      "log_loss": 0.1359743138168832,
+      "fit_seconds": 1.663613583004917,
+      "predict_seconds": 0.10125491600774694,
+      "n_layers": 1,
+      "interaction_counts_by_layer": [
+        6
+      ]
+    },
+    {
+      "seed": 42,
+      "fold": 2,
+      "model": "ifc_random_projection",
+      "accuracy": 0.956140350877193,
+      "macro_f1": 0.9526381387619444,
+      "roc_auc": 0.9929577464788732,
+      "log_loss": 0.10654497408463155,
+      "fit_seconds": 3.2238987919990905,
+      "predict_seconds": 0.32962041700375266,
+      "n_layers": 3,
+      "interaction_counts_by_layer": [
+        6,
+        6,
+        6
+      ]
+    },
+    {
+      "seed": 42,
+      "fold": 3,
+      "model": "standard",
+      "accuracy": 0.9649122807017544,
+      "macro_f1": 0.9619111259605746,
+      "roc_auc": 0.9821428571428572,
+      "log_loss": 0.12956034881378245,
+      "fit_seconds": 3.168481958011398,
+      "predict_seconds": 0.37759108300087973,
+      "n_layers": 3,
+      "interaction_counts_by_layer": []
+    },
+    {
+      "seed": 42,
+      "fold": 3,
+      "model": "random_projection",
+      "accuracy": 0.9649122807017544,
+      "macro_f1": 0.9619111259605746,
+      "roc_auc": 0.9826388888888888,
+      "log_loss": 0.1307942261538061,
+      "fit_seconds": 3.018420958003844,
+      "predict_seconds": 0.3190055000013672,
+      "n_layers": 3,
+      "interaction_counts_by_layer": []
+    },
+    {
+      "seed": 42,
+      "fold": 3,
+      "model": "ifc",
+      "accuracy": 0.9649122807017544,
+      "macro_f1": 0.9619111259605746,
+      "roc_auc": 0.9885912698412699,
+      "log_loss": 0.10828401129878476,
+      "fit_seconds": 2.234060957998736,
+      "predict_seconds": 0.2133011669939151,
+      "n_layers": 2,
+      "interaction_counts_by_layer": [
+        6,
+        6
+      ]
+    },
+    {
+      "seed": 42,
+      "fold": 3,
+      "model": "ifc_random_projection",
+      "accuracy": 0.9649122807017544,
+      "macro_f1": 0.9619111259605746,
+      "roc_auc": 0.9834656084656085,
+      "log_loss": 0.13214331388250933,
+      "fit_seconds": 2.748621958991862,
+      "predict_seconds": 0.21943379200820345,
+      "n_layers": 2,
+      "interaction_counts_by_layer": [
+        6,
+        6
+      ]
+    },
+    {
+      "seed": 42,
+      "fold": 4,
+      "model": "standard",
+      "accuracy": 0.956140350877193,
+      "macro_f1": 0.9539245008487591,
+      "roc_auc": 0.9957010582010583,
+      "log_loss": 0.11682729750340032,
+      "fit_seconds": 1.9378438330022618,
+      "predict_seconds": 0.10674466700584162,
+      "n_layers": 1,
+      "interaction_counts_by_layer": []
+    },
+    {
+      "seed": 42,
+      "fold": 4,
+      "model": "random_projection",
+      "accuracy": 0.956140350877193,
+      "macro_f1": 0.9539245008487591,
+      "roc_auc": 0.9953703703703703,
+      "log_loss": 0.1243525592922557,
+      "fit_seconds": 1.9551196249958593,
+      "predict_seconds": 0.10959004200412892,
+      "n_layers": 1,
+      "interaction_counts_by_layer": []
+    },
+    {
+      "seed": 42,
+      "fold": 4,
+      "model": "ifc",
+      "accuracy": 0.956140350877193,
+      "macro_f1": 0.9539245008487591,
+      "roc_auc": 0.9957010582010583,
+      "log_loss": 0.11682729750340032,
+      "fit_seconds": 1.7642687500047032,
+      "predict_seconds": 0.10781516700808425,
+      "n_layers": 1,
+      "interaction_counts_by_layer": [
+        6
+      ]
+    },
+    {
+      "seed": 42,
+      "fold": 4,
+      "model": "ifc_random_projection",
+      "accuracy": 0.956140350877193,
+      "macro_f1": 0.9539245008487591,
+      "roc_auc": 0.9953703703703703,
+      "log_loss": 0.1243525592922557,
+      "fit_seconds": 2.254459624993615,
+      "predict_seconds": 0.10660266599734314,
+      "n_layers": 1,
+      "interaction_counts_by_layer": [
+        6
+      ]
+    },
+    {
+      "seed": 42,
+      "fold": 5,
+      "model": "standard",
+      "accuracy": 0.9911504424778761,
+      "macro_f1": 0.9904794001179543,
+      "roc_auc": 0.9939637826961771,
+      "log_loss": 0.06493020100160225,
+      "fit_seconds": 2.796526708989404,
+      "predict_seconds": 0.5323428339906968,
+      "n_layers": 5,
+      "interaction_counts_by_layer": []
+    },
+    {
+      "seed": 42,
+      "fold": 5,
+      "model": "random_projection",
+      "accuracy": 0.9734513274336283,
+      "macro_f1": 0.9714382003538631,
+      "roc_auc": 0.9792085848423876,
+      "log_loss": 0.3668406494935048,
+      "fit_seconds": 2.815513584006112,
+      "predict_seconds": 0.21421329099393915,
+      "n_layers": 2,
+      "interaction_counts_by_layer": []
+    },
+    {
+      "seed": 42,
+      "fold": 5,
+      "model": "ifc",
+      "accuracy": 0.9911504424778761,
+      "macro_f1": 0.9904794001179543,
+      "roc_auc": 0.9951374916163649,
+      "log_loss": 0.06219925525035609,
+      "fit_seconds": 2.87320366599306,
+      "predict_seconds": 0.5300925829942571,
+      "n_layers": 5,
+      "interaction_counts_by_layer": [
+        6,
+        6,
+        6,
+        6,
+        6
+      ]
+    },
+    {
+      "seed": 42,
+      "fold": 5,
+      "model": "ifc_random_projection",
+      "accuracy": 0.9646017699115044,
+      "macro_f1": 0.9617208672086721,
+      "roc_auc": 0.9924547283702213,
+      "log_loss": 0.08404267142961132,
+      "fit_seconds": 3.645770666989847,
+      "predict_seconds": 0.2143687920033699,
+      "n_layers": 2,
+      "interaction_counts_by_layer": [
+        6,
+        6
+      ]
+    }
+  ],
+  "summary": {
+    "standard": {
+      "accuracy": {
+        "mean": 0.9684055270920664,
+        "std": 0.013101660507079888
+      },
+      "macro_f1": {
+        "mean": 0.9662615732396975,
+        "std": 0.01400255014135329
+      },
+      "roc_auc": {
+        "mean": 0.9915118835320277,
+        "std": 0.006172464021716134
+      },
+      "log_loss": {
+        "mean": 0.1025699049417746,
+        "std": 0.02909127023156436
+      },
+      "fit_seconds": {
+        "mean": 2.509413791602128,
+        "std": 0.44234227940825305
+      },
+      "predict_seconds": {
+        "mean": 0.3090268167987233,
+        "std": 0.14484960824871262
+      },
+      "n_layers": {
+        "mean": 2.8,
+        "std": 1.32664991614216
+      }
+    },
+    "random_projection": {
+      "accuracy": {
+        "mean": 0.9648657040832168,
+        "std": 0.012372754323960556
+      },
+      "macro_f1": {
+        "mean": 0.962326804519513,
+        "std": 0.013415271839098002
+      },
+      "roc_auc": {
+        "mean": 0.9892817607626812,
+        "std": 0.0073846616806390155
+      },
+      "log_loss": {
+        "mean": 0.17134183677873177,
+        "std": 0.09851831376025477
+      },
+      "fit_seconds": {
+        "mean": 2.3040644250024345,
+        "std": 0.5100489352627954
+      },
+      "predict_seconds": {
+        "mean": 0.17242469159828033,
+        "std": 0.08373816992676093
+      },
+      "n_layers": {
+        "mean": 1.6,
+        "std": 0.8
+      }
+    },
+    "ifc": {
+      "accuracy": {
+        "mean": 0.9684055270920664,
+        "std": 0.013101660507079888
+      },
+      "macro_f1": {
+        "mean": 0.9662615732396975,
+        "std": 0.01400255014135329
+      },
+      "roc_auc": {
+        "mean": 0.9939206838793311,
+        "std": 0.0032604639659364063
+      },
+      "log_loss": {
+        "mean": 0.0990842482534994,
+        "std": 0.027738131087251837
+      },
+      "fit_seconds": {
+        "mean": 2.2864947330002905,
+        "std": 0.5255079978138839
+      },
+      "predict_seconds": {
+        "mean": 0.2544607750023715,
+        "std": 0.15932258159894008
+      },
+      "n_layers": {
+        "mean": 2.4,
+        "std": 1.4966629547095764
+      }
+    },
+    "ifc_random_projection": {
+      "accuracy": {
+        "mean": 0.9666045645086166,
+        "std": 0.012901097440554028
+      },
+      "macro_f1": {
+        "mean": 0.9641802814104776,
+        "std": 0.013807640638984844
+      },
+      "roc_auc": {
+        "mean": 0.992718672066854,
+        "std": 0.005228470091552346
+      },
+      "log_loss": {
+        "mean": 0.10144988841435523,
+        "std": 0.026457345181182756
+      },
+      "fit_seconds": {
+        "mean": 3.1417693501949544,
+        "std": 0.5804713745452114
+      },
+      "predict_seconds": {
+        "mean": 0.23899580000143034,
+        "std": 0.08260583792463709
+      },
+      "n_layers": {
+        "mean": 2.2,
+        "std": 0.7483314773547882
+      }
+    }
+  }
+}

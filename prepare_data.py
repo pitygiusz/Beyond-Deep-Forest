@@ -2,6 +2,7 @@
 
 Usage:  X_train, X_val, X_test, y_train, y_val, y_test = get_split("adult")
 """
+import pickle
 from pathlib import Path
 
 import openml
@@ -13,7 +14,8 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import FunctionTransformer, OneHotEncoder, StandardScaler
 from ucimlrepo import fetch_ucirepo
 
-RAW_DIR = Path("raw_data")
+RAW_DIR = Path(__file__).resolve().parent / "raw_data"
+CACHE_DIR = RAW_DIR / "cache"
 
 # name -> (source, id or path, target column)
 DATASETS = {
@@ -79,10 +81,18 @@ def clean_features(X, max_unique_ratio=0.5):
 
 
 def load_dataset(name):
-    """Return cleaned features X (DataFrame) and integer labels y."""
+    """Return cleaned features X (DataFrame) and integer labels y (cached in raw_data/cache/)."""
+    cache = CACHE_DIR / f"{name}.pkl"
+    if cache.exists():
+        with open(cache, "rb") as f:
+            return pickle.load(f)
     source, key, target = DATASETS[name]
     X, y = split_target(load_raw(source, key), target, drop=LEAKY_COLUMNS.get(name, ()))
-    return clean_features(X), y
+    X = clean_features(X)
+    CACHE_DIR.mkdir(parents=True, exist_ok=True)
+    with open(cache, "wb") as f:
+        pickle.dump((X, y), f)
+    return X, y
 
 
 def _as_str_with_missing(X):
@@ -124,6 +134,19 @@ def get_split(name, val_size=0.2, test_size=0.2, seed=0):
     prep = make_preprocessor(X_train)
     X_train = prep.fit_transform(X_train)
     return X_train, prep.transform(X_val), prep.transform(X_test), y_train, y_val, y_test
+
+
+def get_train_test(name, test_size=0.3, seed=0):
+    """Stratified train/test split; the preprocessor is fitted on train only.
+
+    Returns X_train, X_test, y_train, y_test as numpy arrays.
+    """
+    X, y = load_dataset(name)
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=test_size, stratify=y, random_state=seed)
+
+    prep = make_preprocessor(X_train)
+    return prep.fit_transform(X_train), prep.transform(X_test), y_train, y_test
 
 
 if __name__ == "__main__":

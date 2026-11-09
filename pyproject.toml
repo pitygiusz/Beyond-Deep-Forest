@@ -19,5 +19,5 @@ legacy = [
     "torch>=2.5,<3",
 ]
 
-[tool.uv]
-package = false
+[tool.setuptools.packages.find]
+exclude = ["results*", "raw_data*", "experiments*", "notebooks*", "docs*"]  

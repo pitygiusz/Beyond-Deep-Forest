@@ -1,0 +1,15 @@
+Metadata-Version: 2.4
+Name: beyond-deep-forest-experiments
+Version: 0.1.0
+Requires-Python: <3.13,>=3.12
+Requires-Dist: numpy==2.3.5
+Requires-Dist: scipy==1.16.2
+Requires-Dist: scikit-learn==1.5.2
+Requires-Dist: deep-forest-py310==0.1.9
+Requires-Dist: openml>=0.15.1
+Requires-Dist: pandas>=2.3.3
+Requires-Dist: ucimlrepo>=0.0.7
+Requires-Dist: xgboost>=3.4.1
+Provides-Extra: legacy
+Requires-Dist: pandas<3,>=2.2; extra == "legacy"
+Requires-Dist: torch<3,>=2.5; extra == "legacy"

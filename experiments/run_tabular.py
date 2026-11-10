@@ -1,12 +1,15 @@
-"""Run the four Deep Forest variants on the tabular datasets.
+"""Run Deep Forest variants and MLP baselines on the tabular datasets.
 
 One stratified 70/30 train/test split per seed. Results are appended to a CSV
 (one row per dataset x mode x seed); rows already in the CSV are skipped, so an
 interrupted run can be resumed by running the same command again.
 
 Usage (from the repository root):
-    uv run -m experiments.run_tabular
-    uv run -m experiments.run_tabular --datasets yeast spambase --modes bare ifc --seeds 0 1
+    py -3.12 -m venv .venv
+    .venv\Scripts\python.exe -m ensurepip --upgrade
+    .venv\Scripts\python.exe -m pip install -r requirements-experiments.txt
+    .venv\Scripts\python.exe -m experiments.run_tabular
+    .venv\Scripts\python.exe -m experiments.run_tabular --datasets yeast spambase --modes bare ifc mlp_standardized mlp_raw --seeds 0 1
 """
 
 import argparse
@@ -15,10 +18,12 @@ from pathlib import Path
 from time import perf_counter
 
 import pandas as pd
-from sklearn.exceptions import DataDimensionalityWarning
+from sklearn.exceptions import ConvergenceWarning, DataDimensionalityWarning
 from sklearn.metrics import (accuracy_score, balanced_accuracy_score, f1_score,
                              precision_score, recall_score)
 
+from experiments.MLP import make_mlp
+from experiments.MLP.data import get_mlp_train_test
 from experiments.ifc_projection import DeepForestVariantClassifier
 from prepare_data import DATASETS, get_train_test
 
@@ -26,19 +31,31 @@ ROOT = Path(__file__).resolve().parent.parent
 
 # harmless: datasets with < 16 features get "projected" to more dimensions than they have
 warnings.filterwarnings("ignore", category=DataDimensionalityWarning)
+warnings.filterwarnings("ignore", category=ConvergenceWarning)
 
 # roughly smallest to largest, so quick results come first
 DATASET_ORDER = ["arcene", "yeast", "madelon", "tuandromd", "spambase", "satimage", "musk_v2",
                  "support2", "letter", "bank_marketing", "adult", "kick"]
-MODES = list(DeepForestVariantClassifier.VARIANTS)  # bare, projection, ifc, combined
+MODES = [*DeepForestVariantClassifier.VARIANTS, "mlp_standardized", "mlp_raw"]
 
 
 def run_one(dataset, mode, seed, args):
-    X_train, X_test, y_train, y_test = get_train_test(dataset, test_size=args.test_size, seed=seed)
-    model = DeepForestVariantClassifier(
-        variant=mode, n_estimators=args.n_estimators, n_trees=args.n_trees,
-        max_layers=args.max_layers, random_state=seed, n_jobs=args.n_jobs,
-    )
+    if mode.startswith("mlp_"):
+        input_mode = mode.removeprefix("mlp_")
+        X_train, X_test, y_train, y_test = get_mlp_train_test(
+            dataset, test_size=args.test_size, seed=seed, input_mode=input_mode)
+        model = make_mlp(
+            dataset, n_layers=args.mlp_layers, random_state=seed,
+            max_iter=args.mlp_max_iter, alpha=args.mlp_alpha,
+            learning_rate_init=args.mlp_learning_rate_init,
+        )
+    else:
+        X_train, X_test, y_train, y_test = get_train_test(
+            dataset, test_size=args.test_size, seed=seed)
+        model = DeepForestVariantClassifier(
+            variant=mode, n_estimators=args.n_estimators, n_trees=args.n_trees,
+            max_layers=args.max_layers, random_state=seed, n_jobs=args.n_jobs,
+        )
 
     start = perf_counter()
     model.fit(X_train, y_train)
@@ -56,7 +73,7 @@ def run_one(dataset, mode, seed, args):
         "precision": precision_score(y_test, y_pred, average="macro", zero_division=0),
         "recall": recall_score(y_test, y_pred, average="macro", zero_division=0),
         "fit_seconds": fit_seconds, "predict_seconds": predict_seconds,
-        "n_layers": model.n_layers_,
+        "n_layers": model.n_layers_ if not mode.startswith("mlp_") else args.mlp_layers,
     }
 
 
@@ -69,10 +86,16 @@ def main():
     parser.add_argument("--n-estimators", type=int, default=2, help="RF/ExtraTrees pairs per layer")
     parser.add_argument("--n-trees", type=int, default=50, help="trees per forest")
     parser.add_argument("--max-layers", type=int, default=10)
+    parser.add_argument("--mlp-layers", type=int, default=10, help="hidden layers for MLP modes (1..10)")
+    parser.add_argument("--mlp-max-iter", type=int, default=300)
+    parser.add_argument("--mlp-alpha", type=float, default=1e-4)
+    parser.add_argument("--mlp-learning-rate-init", type=float, default=1e-3)
     parser.add_argument("--n-jobs", type=int, default=1,
                         help="parallel workers per forest (-1 = all cores; has a large startup cost)")
     parser.add_argument("--output", type=Path, default=ROOT / "results" / "tabular.csv")
     args = parser.parse_args()
+    if not 1 <= args.mlp_layers <= 10 or args.mlp_max_iter < 1 or args.mlp_alpha < 0 or args.mlp_learning_rate_init <= 0:
+        parser.error("MLP layers must be 1..10, max-iter positive, alpha non-negative, and learning-rate-init positive")
 
     args.output.parent.mkdir(parents=True, exist_ok=True)
     done = set()
@@ -94,5 +117,5 @@ def main():
 
 
 if __name__ == "__main__":
-    assert set(DATASET_ORDER) == set(DATASETS), "DATASET_ORDER is out of sync with prepare_data.DATASETS"
+    assert set(DATASET_ORDER) <= set(DATASETS), "DATASET_ORDER has a name missing from prepare_data.DATASETS"
     main()

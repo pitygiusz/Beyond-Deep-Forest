@@ -1,6 +1,6 @@
 # IFC and fixed random projections in Deep Forest
 
-This experiment compares four architectures on identical stratified folds: standard Deep Forest, fixed random nonlinear projections, an adaptation of hiDF-style interaction feature concatenation (IFC), and both changes together. The implementation uses `deep-forest-py310==0.1.9`, as specified in [pyproject.toml](../../pyproject.toml).
+This experiment compares four architectures on identical stratified folds: standard Deep Forest, fixed random nonlinear projections, an adaptation of hiDF-style interaction feature concatenation (IFC), and both changes together. 
 
 ## Architecture diagrams
 
@@ -39,16 +39,6 @@ From the repository root, run the default five-fold comparison with:
 uv run -m experiments.ifc_projection.run_experiment
 ```
 
-To compare multiple split seeds, use `--seeds 42 43 44`.
-To compare only two model variants, use `--variants bare combined`.
-For a small diagnostic run, use:
-
-```bash
-uv run -m experiments.ifc_projection.run_experiment --folds 2 --n-trees 30 --max-layers 2 --interaction-bootstraps 2 --rit-trees 8
-```
-
-The defaults are two RF/ExtraTrees pairs per layer, 50 trees per forest, at most five layers, 16 projected features per forest, at most six IFC features per layer, three bootstrap forests, and 20 random intersection trees per bootstrap.
-The runner writes per-fold records and aggregate metrics to `results/latest.json`; the archived outputs are described in [results/README.md](results/README.md).
 
 ## Reusable classifier
 
@@ -63,10 +53,3 @@ model.fit(X_train, y_train)
 predictions = model.predict(X_test)
 probabilities = model.predict_proba(X_test)
 ```
-
-The runnable [smoke script](smoke_experiment.py) trains a small model with this API and accepts `--variant all` to try all four variants.
-Run it from the repository root with `uv run -m experiments.ifc_projection.smoke_experiment --variant all`.
-
-## Interpretation
-
-The four-way comparison isolates the two additions, but IFC uses training labels and its training-row features can make the cascade's internal out-of-bag depth criterion optimistic. Treat the archived one-dataset, one-seed results as exploratory until interaction features are cross-fitted and the comparison is repeated across datasets and seeds. The focused checks in [test_random_projected_deep_forest.py](test_random_projected_deep_forest.py) cover seeded projections, interaction selection on a real training fold, and two-layer combined prediction.

@@ -1,9 +1,3 @@
-# Byte-compiled / optimized / DLL files
-__pycache__/
-*.py[cod]
-*$py.class
-
-# OS artifacts
 .DS_Store
 Thumbs.db
 
@@ -14,3 +8,7 @@ Thumbs.db
 venv/
 .env/
 .venv/
+
+__pycache__
+
+CLAUDE.md

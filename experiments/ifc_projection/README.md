@@ -1,6 +1,26 @@
 # IFC and fixed random projections in Deep Forest
 
-This experiment compares four architectures on identical stratified folds: standard Deep Forest, fixed random nonlinear projections, an adaptation of hiDF-style interaction feature concatenation (IFC), and both changes together. The implementation imports the published `deep-forest-py310==0.1.9` package specified in [pyproject.toml](../../pyproject.toml); it needs no cloned repository or local build copy.
+This experiment compares four architectures on identical stratified folds: standard Deep Forest, fixed random nonlinear projections, an adaptation of hiDF-style interaction feature concatenation (IFC), and both changes together. The implementation uses `deep-forest-py310==0.1.9`, as specified in [pyproject.toml](../../pyproject.toml).
+
+## Architecture diagrams
+
+These schematics use an example with six input features, four forests, and three classes. The actual feature and class counts depend on the dataset.
+
+### Standard Deep Forest (`bare`)
+
+![Standard Deep Forest cascade with class probabilities and raw features passed to the next layer](diagrams/deep_forest_baseline.png)
+
+### Fixed random projections (`projection`)
+
+![Deep Forest cascade with a separate fixed random projection before each forest](diagrams/deep_forest_projection.svg)
+
+### Interaction feature concatenation (`ifc`)
+
+![Deep Forest cascade with selected interaction features added to the next layer input](diagrams/deep_forest_ifc.svg)
+
+### Projections and IFC (`combined`)
+
+![Deep Forest cascade combining fixed random projections and interaction features](diagrams/deep_forest_combined.svg)
 
 ## Methods
 
@@ -8,7 +28,7 @@ Each projected RF or ExtraTrees estimator receives its layer input plus the outp
 
 The [IFC adapter](interaction_features.py) follows the rule-interaction procedure in the authors' [hiDF source](https://github.com/lyushenhuan/chen2021improving/blob/e1d8d31a8628819d73e75741880d0850c39dfbd1/hiDF/hiDF_utils_threshold.py): bootstrap forests, signed decision rules, random intersection trees, stability filtering, and activated linear-combination features. The adapter also retains two-condition sub-rules of each intersection so repeatable low-order patterns can be matched across bootstrap forests. Selected interaction features join the probability vector passed to the next cascade layer; in the combined model, the interaction extractor can use both raw and projected features from one forest's input. The outer test fold is never passed to the interaction extractor.
 
-This is an adaptation of hiDF's feature generation, not a run of its original classifier. The original hiDF package has legacy compiled-tree and prediction-path issues under the current Python environment, so it is cited as a method source and is not installed or imported. The projection component is inspired by Deep Isolation Forest but remains part of a supervised cascade classifier.
+This adapts hiDF's feature generation within a supervised cascade classifier. The projection component is inspired by Deep Isolation Forest.
 
 ## Setup and run
 
@@ -28,7 +48,7 @@ uv run -m experiments.ifc_projection.run_experiment --folds 2 --n-trees 30 --max
 ```
 
 The defaults are two RF/ExtraTrees pairs per layer, 50 trees per forest, at most five layers, 16 projected features per forest, at most six IFC features per layer, three bootstrap forests, and 20 random intersection trees per bootstrap.
-The runner writes per-fold records and aggregate metrics to the ignored `results/latest.json`; the recorded outputs and their provenance are in [results/README.md](results/README.md).
+The runner writes per-fold records and aggregate metrics to `results/latest.json`; the archived outputs are described in [results/README.md](results/README.md).
 
 ## Reusable classifier
 

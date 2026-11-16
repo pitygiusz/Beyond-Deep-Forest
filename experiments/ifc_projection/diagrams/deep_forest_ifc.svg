@@ -1,0 +1,126 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2020" height="740" viewBox="0 0 2020 740">
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#30343a"/></marker></defs>
+<rect width="100%" height="100%" fill="white"/>
+<text x="1010.0" y="54.2" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="700" fill="#30343a">Interaction feature concatenation + Deep Forest</text>
+<rect x="20" y="274" width="160" height="270" rx="12" fill="#f4f5f6" stroke="#30343a" stroke-width="1.5"/>
+<text x="100.0" y="340.405" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="400" fill="#30343a">INPUT VECTOR</text>
+<text x="100.0" y="361.655" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="400" fill="#30343a">6 raw features</text>
+<text x="100.0" y="382.905" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="400" fill="#30343a">x₁ = 2.4</text>
+<text x="100.0" y="404.155" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="400" fill="#30343a">x₂ = 0.8</text>
+<text x="100.0" y="425.405" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="400" fill="#30343a">x₃ = 1.5</text>
+<text x="100.0" y="446.655" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="400" fill="#30343a">x₄ = 3.1</text>
+<text x="100.0" y="467.905" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="400" fill="#30343a">x₅ = 0.2</text>
+<text x="100.0" y="489.155" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="400" fill="#30343a">x₆ = 4.7</text>
+<rect x="230" y="123" width="500" height="465" rx="12" fill="#f4f5f6" stroke="#30343a" stroke-width="1.5"/>
+<text x="480.0" y="361.62" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="400" fill="#30343a"></text>
+<rect x="1120" y="123" width="500" height="465" rx="12" fill="#f4f5f6" stroke="#30343a" stroke-width="1.5"/>
+<text x="1370.0" y="361.62" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="400" fill="#30343a"></text>
+<text x="480.0" y="156.12" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="700" fill="#30343a">CASCADE LEVEL 1  ·  4 forests × 3 classes</text>
+<text x="1370.0" y="156.12" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="700" fill="#30343a">CASCADE LEVEL 2  ·  24 input features</text>
+<text x="480.0" y="189.1" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="400" fill="#66717e">Four independent probability vectors</text>
+<text x="1370.0" y="189.1" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="400" fill="#66717e">IFC repeats at each level</text>
+<rect x="264" y="218" width="190" height="64" rx="12" fill="#e8e9eb" stroke="#30343a" stroke-width="1.5"/>
+<text x="359.0" y="255.1" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="700" fill="#30343a">Random forest 1</text>
+<rect x="483" y="218" width="227" height="64" rx="12" fill="#ffffff" stroke="#30343a" stroke-width="1.5"/>
+<text x="596.5" y="245.725" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="400" fill="#30343a">Class Vector:</text>
+<text x="596.5" y="264.475" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="400" fill="#30343a">[0.70, 0.20, 0.10]</text>
+<polyline points="454,250 483,250" fill="none" stroke="#66717e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="264" y="306" width="190" height="64" rx="12" fill="#e8e9eb" stroke="#30343a" stroke-width="1.5"/>
+<text x="359.0" y="343.1" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="700" fill="#30343a">ExtraTrees 1</text>
+<rect x="483" y="306" width="227" height="64" rx="12" fill="#ffffff" stroke="#30343a" stroke-width="1.5"/>
+<text x="596.5" y="333.725" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="400" fill="#30343a">Class Vector:</text>
+<text x="596.5" y="352.475" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="400" fill="#30343a">[0.65, 0.25, 0.10]</text>
+<polyline points="454,338 483,338" fill="none" stroke="#66717e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="264" y="394" width="190" height="64" rx="12" fill="#e8e9eb" stroke="#30343a" stroke-width="1.5"/>
+<text x="359.0" y="431.1" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="700" fill="#30343a">Random forest 2</text>
+<rect x="483" y="394" width="227" height="64" rx="12" fill="#ffffff" stroke="#30343a" stroke-width="1.5"/>
+<text x="596.5" y="421.725" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="400" fill="#30343a">Class Vector:</text>
+<text x="596.5" y="440.475" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="400" fill="#30343a">[0.80, 0.15, 0.05]</text>
+<polyline points="454,426 483,426" fill="none" stroke="#66717e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="264" y="482" width="190" height="64" rx="12" fill="#e8e9eb" stroke="#30343a" stroke-width="1.5"/>
+<text x="359.0" y="519.1" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="700" fill="#30343a">ExtraTrees 2</text>
+<rect x="483" y="482" width="227" height="64" rx="12" fill="#ffffff" stroke="#30343a" stroke-width="1.5"/>
+<text x="596.5" y="509.725" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="400" fill="#30343a">Class Vector:</text>
+<text x="596.5" y="528.475" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="400" fill="#30343a">[0.60, 0.30, 0.10]</text>
+<polyline points="454,514 483,514" fill="none" stroke="#66717e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="1154" y="218" width="190" height="64" rx="12" fill="#e8e9eb" stroke="#30343a" stroke-width="1.5"/>
+<text x="1249.0" y="255.1" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="700" fill="#30343a">Random forest 1</text>
+<rect x="1373" y="218" width="227" height="64" rx="12" fill="#ffffff" stroke="#30343a" stroke-width="1.5"/>
+<text x="1486.5" y="245.725" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="400" fill="#30343a">Class Vector:</text>
+<text x="1486.5" y="264.475" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="400" fill="#30343a">[0.85, 0.10, 0.05]</text>
+<polyline points="1344,250 1373,250" fill="none" stroke="#66717e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="1154" y="306" width="190" height="64" rx="12" fill="#e8e9eb" stroke="#30343a" stroke-width="1.5"/>
+<text x="1249.0" y="343.1" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="700" fill="#30343a">ExtraTrees 1</text>
+<rect x="1373" y="306" width="227" height="64" rx="12" fill="#ffffff" stroke="#30343a" stroke-width="1.5"/>
+<text x="1486.5" y="333.725" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="400" fill="#30343a">Class Vector:</text>
+<text x="1486.5" y="352.475" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="400" fill="#30343a">[0.82, 0.12, 0.06]</text>
+<polyline points="1344,338 1373,338" fill="none" stroke="#66717e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="1154" y="394" width="190" height="64" rx="12" fill="#e8e9eb" stroke="#30343a" stroke-width="1.5"/>
+<text x="1249.0" y="431.1" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="700" fill="#30343a">Random forest 2</text>
+<rect x="1373" y="394" width="227" height="64" rx="12" fill="#ffffff" stroke="#30343a" stroke-width="1.5"/>
+<text x="1486.5" y="421.725" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="400" fill="#30343a">Class Vector:</text>
+<text x="1486.5" y="440.475" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="400" fill="#30343a">[0.90, 0.08, 0.02]</text>
+<polyline points="1344,426 1373,426" fill="none" stroke="#66717e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="1154" y="482" width="190" height="64" rx="12" fill="#e8e9eb" stroke="#30343a" stroke-width="1.5"/>
+<text x="1249.0" y="519.1" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="700" fill="#30343a">ExtraTrees 2</text>
+<rect x="1373" y="482" width="227" height="64" rx="12" fill="#ffffff" stroke="#30343a" stroke-width="1.5"/>
+<text x="1486.5" y="509.725" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="400" fill="#30343a">Class Vector:</text>
+<text x="1486.5" y="528.475" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="400" fill="#30343a">[0.78, 0.15, 0.07]</text>
+<polyline points="1344,514 1373,514" fill="none" stroke="#66717e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<polyline points="180,409 207,409" fill="none" stroke="#30343a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<polyline points="207,250 207,514" fill="none" stroke="#30343a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<polyline points="1050,386 1097,386" fill="none" stroke="#30343a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<polyline points="1097,250 1097,514" fill="none" stroke="#30343a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<polyline points="207,250 264,250" fill="none" stroke="#30343a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<polyline points="1097,250 1154,250" fill="none" stroke="#30343a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<polyline points="207,338 264,338" fill="none" stroke="#30343a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<polyline points="1097,338 1154,338" fill="none" stroke="#30343a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<polyline points="207,426 264,426" fill="none" stroke="#30343a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<polyline points="1097,426 1154,426" fill="none" stroke="#30343a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<polyline points="207,514 264,514" fill="none" stroke="#30343a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<polyline points="1097,514 1154,514" fill="none" stroke="#30343a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<polyline points="710,250 762,250" fill="none" stroke="#30343a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<polyline points="710,338 762,338" fill="none" stroke="#30343a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<polyline points="710,426 762,426" fill="none" stroke="#30343a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<polyline points="710,514 762,514" fill="none" stroke="#30343a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<polyline points="762,250 762,514" fill="none" stroke="#30343a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<polyline points="762,386 805,386" fill="none" stroke="#30343a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<polyline points="180,297 195,297 195,90 925,90 925,213" fill="none" stroke="#66717e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="7 6" marker-end="url(#arrow)"/>
+<rect x="500" y="76" width="275" height="29" rx="0" fill="#ffffff" stroke="#ffffff" stroke-width="1.5"/>
+<text x="637.5" y="96.28" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="400" fill="#30343a"></text>
+<text x="637.5" y="95.6" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="400" fill="#66717e">concatenate raw features</text>
+<rect x="805" y="213" width="245" height="345" rx="12" fill="#ffffff" stroke="#30343a" stroke-width="1.5"/>
+<text x="927.5" y="338.155" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="400" fill="#30343a">AUGMENTED VECTOR</text>
+<text x="927.5" y="359.405" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="400" fill="#30343a">6 raw features</text>
+<text x="927.5" y="380.655" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="400" fill="#30343a">+ 12 probabilities (4 × 3)</text>
+<text x="927.5" y="401.905" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="400" fill="#30343a">+ 6 IFC features</text>
+<text x="927.5" y="423.155" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="400" fill="#30343a">= 24 features</text>
+<text x="927.5" y="444.405" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="400" fill="#30343a">→ level 2 input</text>
+<polyline points="1050,386 1120,386" fill="none" stroke="#30343a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<polyline points="1600,250 1655,250" fill="none" stroke="#30343a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<polyline points="1600,338 1655,338" fill="none" stroke="#30343a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<polyline points="1600,426 1655,426" fill="none" stroke="#30343a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<polyline points="1600,514 1655,514" fill="none" stroke="#30343a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<polyline points="1655,250 1655,514" fill="none" stroke="#30343a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<polyline points="1655,341 1710,341" fill="none" stroke="#30343a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="1710" y="288" width="290" height="105" rx="12" fill="#ffffff" stroke="#30343a" stroke-width="1.5"/>
+<text x="1855.0" y="324.12" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="700" fill="#30343a">AVERAGE CLASS VECTOR</text>
+<text x="1855.0" y="346.62" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="700" fill="#30343a">[0.838, 0.112, 0.050]</text>
+<text x="1855.0" y="369.12" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="700" fill="#30343a">argmax → Class 1</text>
+<rect x="1710" y="458" width="290" height="92" rx="12" fill="#e8e9eb" stroke="#30343a" stroke-width="1.5"/>
+<text x="1855.0" y="488.53" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="400" fill="#30343a">CONTINUE CASCADE</text>
+<text x="1855.0" y="509.78" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="400" fill="#30343a">or stop at retained level</text>
+<text x="1855.0" y="531.03" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="400" fill="#30343a">by validation criterion</text>
+<polyline points="1655,504 1710,504" fill="none" stroke="#30343a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="230" y="618" width="230" height="88" rx="12" fill="#fff3de" stroke="#30343a" stroke-width="1.5"/>
+<text x="345.0" y="648.35" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="700" fill="#30343a">Bootstrap forests</text>
+<text x="345.0" y="667.1" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="700" fill="#30343a">signed rules</text>
+<text x="345.0" y="685.85" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="700" fill="#30343a">random intersections</text>
+<rect x="530" y="618" width="230" height="88" rx="12" fill="#fff3de" stroke="#30343a" stroke-width="1.5"/>
+<text x="645.0" y="648.35" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="700" fill="#30343a">Stability filter</text>
+<text x="645.0" y="667.1" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="700" fill="#30343a">activated combinations</text>
+<text x="645.0" y="685.85" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="700" fill="#30343a">6 IFC features</text>
+<polyline points="180,508 195,508 195,662 230,662" fill="none" stroke="#66717e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="7 6" marker-end="url(#arrow)"/>
+<polyline points="460,662 530,662" fill="none" stroke="#30343a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<polyline points="760,662 928,662 928,558" fill="none" stroke="#66717e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="7 6" marker-end="url(#arrow)"/>
+</svg>

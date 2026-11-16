@@ -6,7 +6,6 @@ import pickle
 from pathlib import Path
 
 import numpy as np
-import openml
 import pandas as pd
 from sklearn.compose import ColumnTransformer
 from sklearn.datasets import fetch_olivetti_faces
@@ -15,7 +14,6 @@ from sklearn.impute import SimpleImputer
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import FunctionTransformer, OneHotEncoder, StandardScaler
-from ucimlrepo import fetch_ucirepo
 
 RAW_DIR = Path(__file__).resolve().parent / "raw_data"
 CACHE_DIR = RAW_DIR / "cache"
@@ -73,10 +71,14 @@ def _load_imdb():
 
 def load_raw(source, key):
     if source == "openml":
+        import openml
+
         ds = openml.datasets.get_dataset(key, download_data=True)
         X, y, _, _ = ds.get_data(target=ds.default_target_attribute)
         return X.assign(target=y)
     if source == "uci":
+        from ucimlrepo import fetch_ucirepo
+
         ds = fetch_ucirepo(id=key)
         return pd.concat([ds.data.features, ds.data.targets], axis=1)
     if source == "olivetti":
@@ -173,23 +175,29 @@ def get_split(name, val_size=0.2, test_size=0.2, seed=0):
     return X_train, prep.transform(X_val), prep.transform(X_test), y_train, y_val, y_test
 
 
-def get_train_test(name, test_size=0.3, seed=0):
+def get_train_test(name, test_size=0.3, seed=0, return_indices=False):
     """Stratified train/test split; the preprocessor is fitted on train only.
 
-    Returns X_train, X_test, y_train, y_test as numpy arrays.
+    Returns X_train, X_test, y_train, y_test as numpy arrays. If
+    ``return_indices`` is true, also return the train and test positions in
+    the cleaned (and, where applicable, subsampled) dataset.
     """
     X, y = load_dataset(name)
-    X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=test_size, stratify=y, random_state=seed)
+    train_idx, test_idx = train_test_split(
+        np.arange(len(y)), test_size=test_size, stratify=y, random_state=seed)
+    X_train, X_test = X.iloc[train_idx], X.iloc[test_idx]
+    y_train, y_test = y[train_idx], y[test_idx]
 
     if name in TEXT_DATASETS:
         # the vocabulary and idf weights are learned from the training reviews only
         tfidf = TfidfVectorizer(max_features=TFIDF_FEATURES, dtype=np.float32)
-        return (tfidf.fit_transform(X_train["text"]).toarray(),
-                tfidf.transform(X_test["text"]).toarray(), y_train, y_test)
+        result = (tfidf.fit_transform(X_train["text"]).toarray(),
+                  tfidf.transform(X_test["text"]).toarray(), y_train, y_test)
+        return (*result, train_idx, test_idx) if return_indices else result
 
     prep = make_preprocessor(X_train)
-    return prep.fit_transform(X_train), prep.transform(X_test), y_train, y_test
+    result = (prep.fit_transform(X_train), prep.transform(X_test), y_train, y_test)
+    return (*result, train_idx, test_idx) if return_indices else result
 
 
 if __name__ == "__main__":

@@ -11,10 +11,11 @@ dependencies = [
     "pandas>=2.3.3",
     "ucimlrepo>=0.0.7",
     "xgboost>=3.4.1",
+    "matplotlib>=3.11.2",
 ]
 
 [project.optional-dependencies]
-legacy = [
+other = [
     "pandas>=2.2,<3",
     "torch>=2.5,<3",
 ]

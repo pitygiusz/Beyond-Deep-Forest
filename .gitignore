@@ -1,4 +1,9 @@
 .DS_Store
+<<<<<<< HEAD
+__pycache__
+.venv
+.env
+=======
 Thumbs.db
 
 # Jupyter Notebook checkpoints
@@ -13,3 +18,4 @@ __pycache__
 *.egg-info/
 
 CLAUDE.md
+>>>>>>> piotr

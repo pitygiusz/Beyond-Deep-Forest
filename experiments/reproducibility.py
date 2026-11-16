@@ -40,7 +40,7 @@ def array_sha256(array) -> str:
 
 def provenance(config: dict, source_files=SOURCE_FILES) -> dict:
     packages = ("numpy", "scipy", "scikit-learn", "deep-forest-py310",
-                "pandas", "openml", "ucimlrepo", "xgboost")
+                "pandas", "openml", "ucimlrepo", "xgboost", "optuna")
     versions = {}
     for package in packages:
         try:

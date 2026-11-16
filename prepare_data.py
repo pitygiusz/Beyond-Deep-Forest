@@ -44,6 +44,11 @@ DATASETS = {
     "yeast": ("openml", 181, "target"),
 }
 
+# Raw text and image datasets are included in the full benchmark, not the
+# tabular-only entry point.
+NON_TABULAR_DATASETS = frozenset({"imdb", "mnist", "cifar10", "orl"})
+TABULAR_DATASETS = tuple(name for name in DATASETS if name not in NON_TABULAR_DATASETS)
+
 # datasets whose features are raw text (no cleaning; tf-idf inside get_train_test)
 TEXT_DATASETS = {"imdb"}
 
@@ -159,20 +164,49 @@ def make_preprocessor(X, max_categories=20):
     ])
 
 
+def get_raw_train_test(name, test_size=0.2, seed=0):
+    """Return stratified raw train/test splits and positions within the loaded dataset."""
+    X, y = load_dataset(name)
+    train_idx, test_idx = train_test_split(
+        np.arange(len(y)), test_size=test_size, stratify=y, random_state=seed
+    )
+    return (
+        X.iloc[train_idx], X.iloc[test_idx], y[train_idx], y[test_idx],
+        train_idx, test_idx,
+    )
+
+
+def preprocess_splits(name, X_train, *X_others):
+    """Fit preprocessing on one training split and transform one or more held-out splits."""
+    if name in TEXT_DATASETS:
+        tfidf = TfidfVectorizer(max_features=TFIDF_FEATURES, dtype=np.float32)
+        X_train_transformed = tfidf.fit_transform(X_train["text"]).toarray()
+        return (
+            X_train_transformed,
+            *(tfidf.transform(X["text"]).toarray() for X in X_others),
+        )
+
+    preprocessor = make_preprocessor(X_train)
+    X_train_transformed = preprocessor.fit_transform(X_train)
+    return (
+        X_train_transformed,
+        *(preprocessor.transform(X) for X in X_others),
+    )
+
+
 def get_split(name, val_size=0.2, test_size=0.2, seed=0):
     """Stratified train/val/test split; the preprocessor is fitted on train only.
 
     Returns X_train, X_val, X_test, y_train, y_val, y_test as numpy arrays.
     """
-    X, y = load_dataset(name)
-    X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=test_size, stratify=y, random_state=seed)
+    X_train, X_test, y_train, y_test, _, _ = get_raw_train_test(
+        name, test_size=test_size, seed=seed
+    )
     X_train, X_val, y_train, y_val = train_test_split(
         X_train, y_train, test_size=val_size / (1 - test_size), stratify=y_train, random_state=seed)
 
-    prep = make_preprocessor(X_train)
-    X_train = prep.fit_transform(X_train)
-    return X_train, prep.transform(X_val), prep.transform(X_test), y_train, y_val, y_test
+    X_train, X_val, X_test = preprocess_splits(name, X_train, X_val, X_test)
+    return X_train, X_val, X_test, y_train, y_val, y_test
 
 
 def get_train_test(name, test_size=0.3, seed=0, return_indices=False):
@@ -182,21 +216,10 @@ def get_train_test(name, test_size=0.3, seed=0, return_indices=False):
     ``return_indices`` is true, also return the train and test positions in
     the cleaned (and, where applicable, subsampled) dataset.
     """
-    X, y = load_dataset(name)
-    train_idx, test_idx = train_test_split(
-        np.arange(len(y)), test_size=test_size, stratify=y, random_state=seed)
-    X_train, X_test = X.iloc[train_idx], X.iloc[test_idx]
-    y_train, y_test = y[train_idx], y[test_idx]
-
-    if name in TEXT_DATASETS:
-        # the vocabulary and idf weights are learned from the training reviews only
-        tfidf = TfidfVectorizer(max_features=TFIDF_FEATURES, dtype=np.float32)
-        result = (tfidf.fit_transform(X_train["text"]).toarray(),
-                  tfidf.transform(X_test["text"]).toarray(), y_train, y_test)
-        return (*result, train_idx, test_idx) if return_indices else result
-
-    prep = make_preprocessor(X_train)
-    result = (prep.fit_transform(X_train), prep.transform(X_test), y_train, y_test)
+    X_train, X_test, y_train, y_test, train_idx, test_idx = get_raw_train_test(
+        name, test_size=test_size, seed=seed
+    )
+    result = (*preprocess_splits(name, X_train, X_test), y_train, y_test)
     return (*result, train_idx, test_idx) if return_indices else result
 
 

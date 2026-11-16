@@ -1,2 +1,3 @@
 -r requirements-mlp.txt
 deep-forest-py310==0.1.9
+optuna>=4,<5

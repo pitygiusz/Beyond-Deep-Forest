@@ -29,24 +29,57 @@ From the repository root, run a small built-in dataset comparison with:
 uv run -m experiments.ifc_projection.run_experiment
 ```
 
-Run a tabular pilot before the full benchmark:
+Tune a small tabular pilot before running the full workflow. The
+`experiments.run_tabular` entry point excludes the text/image datasets
+(`imdb`, `mnist`, `cifar10`, and `orl`):
 
 ```bash
-uv run -m experiments.run_tabular --datasets yeast madelon --seeds 0 1
+uv run -m experiments.run_tabular --phase tune --datasets yeast madelon --modes bare projection random_forest --tuning-trials 5
 ```
 
-The tabular runner saves a new timestamped CSV and a matching `.metadata.json`.
-The sidecar records code and dependency fingerprints, exact train/test indices,
-prepared-data hashes, model parameters, projection-width validation scores,
-and validation scores used to select cascade depth. A run can be resumed with
-`--output` pointing to its CSV; mismatched code, settings, or data are rejected.
-For projected variants, widths `0`, `4`, and `16` are compared on an inner
-training split by default. Width zero lets validation reject projections.
-The outer test split is used only for final metrics. The runner also includes
-random-forest, ExtraTrees, and histogram gradient boosting baselines; the
-default includes histogram gradient boosting. Each baseline uses a small
-three-fold inner grid search scored by balanced accuracy; the chosen settings
-and inner score are saved in the sidecar.
+The benchmark has separate tuning and final-evaluation phases. By default,
+the tuning phase covers all tabular datasets and model modes, uses 20
+trials per dataset/model, and writes a timestamped tuning JSON artifact:
+
+```bash
+uv run -m experiments.run_tabular --phase tune --tuning-method bayesian
+```
+
+Use `experiments.run` instead to include every dataset in the registry:
+
+```bash
+uv run -m experiments.run --phase tune --tuning-method bayesian
+```
+
+Tuning is per dataset and model. The runner makes a stratified 80/20
+train/test split, then scores every candidate using 3-fold stratified
+cross-validation on the training portion. Preprocessing is fitted separately
+inside each fold, and each cascade selects its depth using only that fold's
+training data. The held-out test portion is not used to select parameters.
+Use `--tuning-method random` for random search, or adjust the search budget
+with `--tuning-trials` and CV folds with `--cv-folds`. Random Forest,
+ExtraTrees, HistGradientBoosting, and the Deep Forest variants (including
+`utility_ifc`) have model-specific search spaces. Current settings are tried
+as an initial configuration.
+
+The tuning command prints the JSON artifact path. Pass that path to the final
+phase; it fits both default and tuned configurations and evaluates them on the
+same test split:
+
+```bash
+uv run -m experiments.run_tabular --phase final --tuning-file results/tabular_tuning_bayesian_<timestamp>.json
+```
+
+For an all-dataset tuning artifact, run the final phase through
+`experiments.run` as well.
+
+The final phase writes a timestamped CSV and `.metadata.json` sidecar.
+It evaluates seed `0` once by default; pass `--seeds 0 1 2 3 4` for repeated
+stratified holdouts. The tuning seed, test fraction, and fixed model settings
+must match the tuning artifact. Results include split indices and hashes,
+selected parameters, CV scores, and final test metrics. Use `--tuning-file`
+with the same path to resume a tuning run; incompatible settings, code, or
+data are rejected.
 
 The older CSV and JSON results remain archived. Their values should not be
 combined with the new protocol without matching provenance.

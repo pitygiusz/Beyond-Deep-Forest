@@ -12,6 +12,7 @@ dependencies = [
     "ucimlrepo>=0.0.7",
     "xgboost>=3.4.1",
     "matplotlib>=3.11.2",
+    "optuna>=4,<5",
 ]
 
 [project.optional-dependencies]

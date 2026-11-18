@@ -4,9 +4,9 @@ from sklearn.base import clone
 from sklearn.datasets import load_breast_cancer, make_classification
 from sklearn.model_selection import StratifiedKFold
 
-from experiments.ifc_projection import DeepForestVariantClassifier
-from experiments.ifc_projection.interaction_features import StableInteractionFeatures
-from experiments.ifc_projection.random_projected_deep_forest import (
+from deep_forests import DeepForestVariantClassifier
+from deep_forests.interaction_features import StableInteractionFeatures
+from deep_forests.random_projected_deep_forest import (
     FixedRandomNonlinearMap,
     InteractionClassificationCascadeLayer,
     RandomProjectedCascadeForestClassifier,
@@ -101,7 +101,7 @@ def test_ifc_training_features_exclude_each_rows_label():
         interaction_folds=3, random_state=7, n_jobs=1, verbose=0,
     )
     with patch(
-        "experiments.ifc_projection.random_projected_deep_forest.StableInteractionFeatures",
+        "deep_forests.random_projected_deep_forest.StableInteractionFeatures",
         MembershipExtractor,
     ):
         training_features = layer.fit_transform(X, y)

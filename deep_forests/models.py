@@ -13,8 +13,7 @@ try:
 except ImportError as exc:
     raise ImportError(
         "CascadeForestClassifier is unavailable in this Python environment. "
-        "From the project root, run 'uv sync' and then use "
-        "'uv run -m experiments.ifc_projection.smoke_experiment'. "
+        "From the project root, run 'uv sync' and then use 'uv run'. "
         "The WUT environment may import an unrelated package named deepforest."
     ) from exc
 

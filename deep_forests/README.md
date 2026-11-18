@@ -1,16 +1,8 @@
 # IFC and fixed random projections in Deep Forest
 
-This experiment compares four architectures on identical stratified folds: standard Deep Forest, fixed random nonlinear projections, an adaptation of hiDF-style interaction feature concatenation (IFC), and both changes together. 
+This package implements four architectures: standard Deep Forest, fixed random nonlinear projections, an adaptation of hiDF-style interaction feature concatenation (IFC), and both changes together. Experiments live in the [repository README](../README.md#run).
 
 The optional `utility_ifc` variant compares candidate forests and IFC channels with inner-fold balanced-accuracy scoring, adds only conditionally useful groups, and pads selected feedback to a fixed width for the next cascade layer. It uses greedy conditional selection: each new group must improve inner-fold score after the already-selected groups, and the score improvement must exceed a minimum utility threshold plus a feature-cost penalty.
-
-Run the focused comparison with:
-
-```bash
-uv run -m experiments.ifc_projection.run_experiment --dataset breast_cancer --variants bare ifc utility_ifc --folds 5 --seeds 42
-```
-
-A small breast-cancer pilot and the exact selected groups are saved in [results/utility_feedback_breast_cancer_seed42.json](results/utility_feedback_breast_cancer_seed42.json). It is a two-fold implementation check, not enough evidence to claim a general improvement.
 
 ## Architecture diagrams
 
@@ -42,15 +34,9 @@ The public classifier chooses cascade depth using a separate stratified validati
 
 This adapts hiDF's feature generation within a supervised cascade classifier. The projection component is inspired by Deep Isolation Forest.
 
-## Setup and run
+## Setup
 
-Sync the uv-managed project environment using the [repository setup instructions](../../README.md#environment).
-From the repository root, run the default five-fold comparison with:
-
-```bash
-uv run -m experiments.ifc_projection.run_experiment
-```
-
+Sync the uv-managed project environment using the [repository setup instructions](../README.md#environment).
 
 ## Reusable classifier
 
@@ -58,7 +44,7 @@ Import [DeepForestVariantClassifier](models.py) and choose `variant="bare"`, `"p
 The class supports scikit-learn's `get_params`, `set_params`, `clone`, `fit`, `predict`, `predict_proba`, and `score` interfaces.
 
 ```python
-from experiments.ifc_projection import DeepForestVariantClassifier
+from deep_forests import DeepForestVariantClassifier
 
 model = DeepForestVariantClassifier(variant="combined", n_trees=50, random_state=42)
 model.fit(X_train, y_train)

@@ -23,7 +23,7 @@ from sklearn.metrics import (accuracy_score, balanced_accuracy_score, f1_score,
                              log_loss, precision_score, recall_score, roc_auc_score)
 from sklearn.model_selection import StratifiedKFold
 
-from experiments.ifc_projection import DeepForestVariantClassifier
+from deep_forests import DeepForestVariantClassifier
 from experiments.reproducibility import array_sha256, provenance
 from prepare_data import DATASETS, TABULAR_DATASETS, get_raw_train_test, preprocess_splits
 

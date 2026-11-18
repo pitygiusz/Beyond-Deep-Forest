@@ -1,4 +1,4 @@
-"""IFC and fixed random projection experiments."""
+"""Deep Forest and its projection and IFC variants."""
 
 from .models import DeepForestVariantClassifier
 

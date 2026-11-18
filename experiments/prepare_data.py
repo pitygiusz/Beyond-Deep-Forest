@@ -1,7 +1,4 @@
-"""Load, clean and split the tabular datasets.
-
-Usage:  X_train, X_val, X_test, y_train, y_val, y_test = get_split("adult")
-"""
+"""Load, clean, split and preprocess the benchmark datasets."""
 import pickle
 from pathlib import Path
 
@@ -15,7 +12,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import FunctionTransformer, OneHotEncoder, StandardScaler
 
-RAW_DIR = Path(__file__).resolve().parent / "raw_data"
+RAW_DIR = Path(__file__).resolve().parent.parent / "raw_data"
 CACHE_DIR = RAW_DIR / "cache"
 
 IMDB_PARQUET = "https://huggingface.co/datasets/stanfordnlp/imdb/resolve/main/plain_text/{}-00000-of-00001.parquet"
@@ -44,12 +41,11 @@ DATASETS = {
     "yeast": ("openml", 181, "target"),
 }
 
-# Raw text and image datasets are included in the full benchmark, not the
-# tabular-only entry point.
+# text and image datasets; the benchmark runs on the tabular ones by default
 NON_TABULAR_DATASETS = frozenset({"imdb", "mnist", "cifar10", "orl"})
 TABULAR_DATASETS = tuple(name for name in DATASETS if name not in NON_TABULAR_DATASETS)
 
-# datasets whose features are raw text (no cleaning; tf-idf inside get_train_test)
+# datasets whose features are raw text (no cleaning; tf-idf inside preprocess_splits)
 TEXT_DATASETS = {"imdb"}
 
 # datasets too large to use whole: keep a stratified random subset of this many rows
@@ -165,15 +161,12 @@ def make_preprocessor(X, max_categories=20):
 
 
 def get_raw_train_test(name, test_size=0.2, seed=0):
-    """Return stratified raw train/test splits and positions within the loaded dataset."""
+    """Stratified train/test split of the cleaned, not yet preprocessed dataset.
+
+    Returns X_train, X_test (DataFrames), y_train, y_test (arrays).
+    """
     X, y = load_dataset(name)
-    train_idx, test_idx = train_test_split(
-        np.arange(len(y)), test_size=test_size, stratify=y, random_state=seed
-    )
-    return (
-        X.iloc[train_idx], X.iloc[test_idx], y[train_idx], y[test_idx],
-        train_idx, test_idx,
-    )
+    return train_test_split(X, y, test_size=test_size, stratify=y, random_state=seed)
 
 
 def preprocess_splits(name, X_train, *X_others):
@@ -193,38 +186,3 @@ def preprocess_splits(name, X_train, *X_others):
         *(preprocessor.transform(X) for X in X_others),
     )
 
-
-def get_split(name, val_size=0.2, test_size=0.2, seed=0):
-    """Stratified train/val/test split; the preprocessor is fitted on train only.
-
-    Returns X_train, X_val, X_test, y_train, y_val, y_test as numpy arrays.
-    """
-    X_train, X_test, y_train, y_test, _, _ = get_raw_train_test(
-        name, test_size=test_size, seed=seed
-    )
-    X_train, X_val, y_train, y_val = train_test_split(
-        X_train, y_train, test_size=val_size / (1 - test_size), stratify=y_train, random_state=seed)
-
-    X_train, X_val, X_test = preprocess_splits(name, X_train, X_val, X_test)
-    return X_train, X_val, X_test, y_train, y_val, y_test
-
-
-def get_train_test(name, test_size=0.3, seed=0, return_indices=False):
-    """Stratified train/test split; the preprocessor is fitted on train only.
-
-    Returns X_train, X_test, y_train, y_test as numpy arrays. If
-    ``return_indices`` is true, also return the train and test positions in
-    the cleaned (and, where applicable, subsampled) dataset.
-    """
-    X_train, X_test, y_train, y_test, train_idx, test_idx = get_raw_train_test(
-        name, test_size=test_size, seed=seed
-    )
-    result = (*preprocess_splits(name, X_train, X_test), y_train, y_test)
-    return (*result, train_idx, test_idx) if return_indices else result
-
-
-if __name__ == "__main__":
-    for name in DATASETS:
-        X_train, X_val, X_test, y_train, y_val, y_test = get_split(name)
-        print(f"{name}: train {X_train.shape}, val {X_val.shape}, test {X_test.shape}, "
-              f"{len(set(y_train))} classes")

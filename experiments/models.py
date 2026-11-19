@@ -7,12 +7,12 @@ from sklearn.model_selection import ParameterSampler
 from deep_forests import DeepForestVariantClassifier
 
 
-DEEP_FORESTS = DeepForestVariantClassifier.VARIANTS
-BASELINES = ("random_forest", "extra_trees", "hist_gradient_boosting")
+DEEP_FORESTS = ("bare", "projection", "ifc", "combined") #, "utility_ifc")
+BASELINES = ("random_forest", "extra_trees") #, "hist_gradient_boosting")
 MODELS = DEEP_FORESTS + BASELINES
 
 USES_PROJECTION = ("projection", "combined")
-USES_INTERACTIONS = ("ifc", "combined", "utility_ifc")
+USES_INTERACTIONS = ("ifc", "combined") #, "utility_ifc")
 
 
 def build_model(name, params, seed, n_jobs=1):

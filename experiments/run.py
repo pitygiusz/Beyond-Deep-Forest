@@ -13,7 +13,8 @@ Each dataset gets one stratified train/test split. For each model:
 Results are written to a run folder:
     settings.json  the settings of the run
     search.csv     one row per candidate configuration with its CV score
-    test.csv       one row per dataset, model, default/tuned, and model seed
+    test.csv       one row per dataset, model, default/tuned, and model seed,
+                   with fit and test-prediction times
 
 Repeat the command with --output <run folder> to resume an interrupted run;
 dataset/model pairs that are already in test.csv are skipped.
@@ -27,6 +28,7 @@ from pathlib import Path
 from time import perf_counter
 
 import numpy as np
+from joblib import Parallel, delayed
 from sklearn.metrics import (accuracy_score, balanced_accuracy_score, f1_score,
                              log_loss, precision_score, recall_score, roc_auc_score)
 from sklearn.model_selection import StratifiedKFold
@@ -38,20 +40,18 @@ from experiments.prepare_data import DATASETS, TABULAR_DATASETS, get_raw_train_t
 RESULTS_DIR = Path(__file__).resolve().parent.parent / "results"
 
 
-def cross_validate(dataset, model_name, params, X, y, cv_folds, seed, n_jobs):
-    """Mean balanced accuracy over CV folds; preprocessing is fitted on each training fold."""
-    folds = StratifiedKFold(cv_folds, shuffle=True, random_state=seed)
-    scores = []
-    for fold, (fit_idx, val_idx) in enumerate(folds.split(X, y)):
-        X_fit, X_val = preprocess_splits(dataset, X.iloc[fit_idx], X.iloc[val_idx])
-        model = build_model(model_name, params, seed + fold, n_jobs)
-        model.fit(X_fit, y[fit_idx])
-        scores.append(balanced_accuracy_score(y[val_idx], model.predict(X_val)))
-    return float(np.mean(scores))
+def fit_fold(model_name, params, seed, X_fit, y_fit, X_val, y_val):
+    """Balanced accuracy and seconds of one CV fit; runs in a worker process."""
+    start = perf_counter()
+    model = build_model(model_name, params, seed)
+    model.fit(X_fit, y_fit)
+    return balanced_accuracy_score(y_val, model.predict(X_val)), perf_counter() - start
 
 
 def score_on_test(model, X_test, y_test):
+    start = perf_counter()
     predicted = model.predict(X_test)
+    predict_seconds = perf_counter() - start
     probability = model.predict_proba(X_test)
     try:
         if probability.shape[1] == 2:
@@ -70,6 +70,7 @@ def score_on_test(model, X_test, y_test):
         "log_loss": log_loss(y_test, probability, labels=model.classes_),
         "recall_by_class": json.dumps(recall_score(
             y_test, predicted, average=None, labels=model.classes_, zero_division=0).tolist()),
+        "predict_seconds": predict_seconds,
     }
 
 
@@ -90,17 +91,31 @@ def finished_pairs(path):
 
 
 def search(dataset, model_name, X_train, y_train, args):
+    """CV score of every candidate; all candidate/fold fits run in args.n_jobs processes.
+
+    Preprocessing is fitted on each training fold; cv_seconds sums the fold fits.
+    """
+    folds = StratifiedKFold(args.cv_folds, shuffle=True, random_state=args.seed)
+    fold_data = [
+        (*preprocess_splits(dataset, X_train.iloc[fit_idx], X_train.iloc[val_idx]),
+         y_train[fit_idx], y_train[val_idx])
+        for fit_idx, val_idx in folds.split(X_train, y_train)
+    ]
+    params_list = candidates(model_name, args.trials, args.seed)
+    results = Parallel(n_jobs=args.n_jobs)(
+        delayed(fit_fold)(model_name, params, args.seed + fold, X_fit, y_fit, X_val, y_val)
+        for params in params_list
+        for fold, (X_fit, X_val, y_fit, y_val) in enumerate(fold_data)
+    )
     rows = []
-    for number, params in enumerate(candidates(model_name, args.trials, args.seed)):
-        start = perf_counter()
-        score = cross_validate(dataset, model_name, params, X_train, y_train,
-                               args.cv_folds, args.seed, args.n_jobs)
+    for number, params in enumerate(params_list):
+        scores, seconds = zip(*results[number * len(fold_data):(number + 1) * len(fold_data)])
         rows.append({
             "dataset": dataset,
             "model": model_name,
             "candidate": number,  # 0 = default settings
-            "cv_balanced_accuracy": score,
-            "cv_seconds": perf_counter() - start,
+            "cv_balanced_accuracy": float(np.mean(scores)),
+            "cv_seconds": sum(seconds),
             "params": json.dumps(params),
         })
     return rows
@@ -110,7 +125,7 @@ def evaluate(dataset, model_name, param_set, candidate, X_train, X_test, y_train
     rows = []
     params = json.loads(candidate["params"])
     for model_seed in args.model_seeds:
-        model = build_model(model_name, params, model_seed, args.n_jobs)
+        model = build_model(model_name, params, model_seed)
         start = perf_counter()
         model.fit(X_train, y_train)
         fit_seconds = perf_counter() - start
@@ -140,7 +155,8 @@ def main():
     parser.add_argument("--model-seeds", nargs="+", type=int, default=[0, 1, 2, 3, 4])
     parser.add_argument("--seed", type=int, default=0, help="seed of the train/test split, CV folds, and sampling")
     parser.add_argument("--test-size", type=float, default=0.2)
-    parser.add_argument("--n-jobs", type=int, default=1)
+    parser.add_argument("--n-jobs", type=int, default=1,
+                        help="parallel processes for the search fits; each model uses one core")
     parser.add_argument("--output", type=Path, help="run folder; reuse one to resume")
     args = parser.parse_args()
 

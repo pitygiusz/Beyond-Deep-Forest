@@ -1,0 +1,14 @@
+{
+  "datasets": [
+    "imdb"
+  ],
+  "models": [
+    "bare",
+    "projection",
+    "ifc",
+    "combined"
+  ],
+  "seed": 0,
+  "n_estimators": 4,
+  "n_trees": 500
+}

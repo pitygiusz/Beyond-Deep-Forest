@@ -123,8 +123,11 @@ def clean_features(X, max_unique_ratio=0.5):
     return X.drop(columns=constant + id_like)
 
 
-def load_dataset(name):
-    """Return cleaned features X (DataFrame) and integer labels y (cached in raw_data/cache/)."""
+def load_dataset(name, subset=True):
+    """Return cleaned features X (DataFrame) and integer labels y (cached in raw_data/cache/).
+
+    subset=False skips the SUBSET_ROWS cut and returns every row.
+    """
     cache = CACHE_DIR / f"{name}.pkl"
     if cache.exists():
         with open(cache, "rb") as f:
@@ -139,7 +142,7 @@ def load_dataset(name):
         CACHE_DIR.mkdir(parents=True, exist_ok=True)
         with open(cache, "wb") as f:
             pickle.dump((X, y), f)
-    if name in SUBSET_ROWS and len(y) > SUBSET_ROWS[name]:
+    if subset and name in SUBSET_ROWS and len(y) > SUBSET_ROWS[name]:
         X, _, y, _ = train_test_split(
             X, y, train_size=SUBSET_ROWS[name], stratify=y, random_state=0
         )

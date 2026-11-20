@@ -1,0 +1,24 @@
+{
+  "datasets": [
+    "bank_marketing"
+  ],
+  "models": [
+    "bare",
+    "projection",
+    "ifc",
+    "combined",
+    "random_forest",
+    "extra_trees"
+  ],
+  "trials": 15,
+  "cv_folds": 3,
+  "model_seeds": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "seed": 0,
+  "test_size": 0.2
+}

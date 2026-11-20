@@ -1,4 +1,3 @@
-"""Load, clean, split and preprocess the benchmark datasets."""
 import pickle
 from pathlib import Path
 
@@ -29,23 +28,27 @@ DATASETS = {
     "bank_marketing": ("openml", 1461, "target"),
     "adult": ("openml", 1590, "target"),
     "support2": ("uci", 880, "hospdead"),
-    # TUNADROMD (UCI id 813) is not available via ucimlrepo or OpenML - downloaded manually
     "tuandromd": ("csv", RAW_DIR / "tuandromd.csv", "Label"),
-    "imdb": ("imdb", None, "target"),  # text; turned into 5000 tf-idf features per split
+    "imdb": ("imdb", None, "target"),  # text
+    "hill_valley": ("openml", 1479, "target"),
+    "amazon_employee_access": ("openml", 4135, "target"),
+    "christine": ("openml", 41142, "target"),
+    "kr_vs_kp": ("openml", 3, "target"),
+    "ozone_level_8hr": ("openml", 1487, "target"),
+    "steel_plates_fault": ("openml", 1504, "target"),
+    "kc1": ("openml", 1067, "target"),
     # multiclass
     "mnist": ("openml", 554, "target"),
     "cifar10": ("openml", 40927, "target"),
-    "orl": ("olivetti", None, "target"),  # the ORL faces, as shipped with scikit-learn
+    "orl": ("olivetti", None, "target"),  # sklearn
     "satimage": ("openml", 182, "target"),
     "letter": ("openml", 6, "target"),
     "yeast": ("openml", 181, "target"),
 }
 
-# text and image datasets; the benchmark runs on the tabular ones by default
+
 NON_TABULAR_DATASETS = frozenset({"imdb", "mnist", "cifar10", "orl"})
 TABULAR_DATASETS = tuple(name for name in DATASETS if name not in NON_TABULAR_DATASETS)
-
-# datasets whose features are raw text (no cleaning; tf-idf inside preprocess_splits)
 TEXT_DATASETS = {"imdb"}
 
 # datasets too large to use whole: keep a stratified random subset of this many rows
@@ -60,12 +63,16 @@ LEAKY_COLUMNS = {
 def _load_olivetti():
     """ORL faces: 400 images of 40 people, 64x64 pixels, cached by scikit-learn in raw_data/sklearn/."""
     X, y = fetch_olivetti_faces(return_X_y=True, data_home=str(RAW_DIR / "sklearn"))
-    return pd.DataFrame(X, columns=[f"px{i}" for i in range(X.shape[1])]).assign(target=y)
+    return pd.DataFrame(X, columns=[f"px{i}" for i in range(X.shape[1])]).assign(
+        target=y
+    )
 
 
 def _load_imdb():
     """IMDB reviews (train + test, 50,000 total), downloaded once as Parquet; 1 = positive review."""
-    frames = [pd.read_parquet(IMDB_PARQUET.format(split)) for split in ("train", "test")]
+    frames = [
+        pd.read_parquet(IMDB_PARQUET.format(split)) for split in ("train", "test")
+    ]
     df = pd.concat(frames, ignore_index=True)
     return pd.DataFrame({"text": df["text"], "target": df["label"]})
 
@@ -124,14 +131,18 @@ def load_dataset(name):
             X, y = pickle.load(f)
     else:
         source, key, target = DATASETS[name]
-        X, y = split_target(load_raw(source, key), target, drop=LEAKY_COLUMNS.get(name, ()))
+        X, y = split_target(
+            load_raw(source, key), target, drop=LEAKY_COLUMNS.get(name, ())
+        )
         if name not in TEXT_DATASETS:
             X = clean_features(X)
         CACHE_DIR.mkdir(parents=True, exist_ok=True)
         with open(cache, "wb") as f:
             pickle.dump((X, y), f)
     if name in SUBSET_ROWS and len(y) > SUBSET_ROWS[name]:
-        X, _, y, _ = train_test_split(X, y, train_size=SUBSET_ROWS[name], stratify=y, random_state=0)
+        X, _, y, _ = train_test_split(
+            X, y, train_size=SUBSET_ROWS[name], stratify=y, random_state=0
+        )
     return X, y
 
 
@@ -145,19 +156,36 @@ def make_preprocessor(X, max_categories=20):
     numeric = X.select_dtypes(include="number").columns.tolist()
     categorical = X.select_dtypes(exclude="number").columns.tolist()
 
-    numeric_pipe = Pipeline([
-        ("impute", SimpleImputer(strategy="median")),
-        ("scale", StandardScaler()),
-    ])
-    categorical_pipe = Pipeline([
-        ("to_str", FunctionTransformer(_as_str_with_missing, feature_names_out="one-to-one")),
-        ("onehot", OneHotEncoder(handle_unknown="infrequent_if_exist", max_categories=max_categories,
-                                 sparse_output=False)),
-    ])
-    return ColumnTransformer([
-        ("num", numeric_pipe, numeric),
-        ("cat", categorical_pipe, categorical),
-    ])
+    numeric_pipe = Pipeline(
+        [
+            ("impute", SimpleImputer(strategy="median")),
+            ("scale", StandardScaler()),
+        ]
+    )
+    categorical_pipe = Pipeline(
+        [
+            (
+                "to_str",
+                FunctionTransformer(
+                    _as_str_with_missing, feature_names_out="one-to-one"
+                ),
+            ),
+            (
+                "onehot",
+                OneHotEncoder(
+                    handle_unknown="infrequent_if_exist",
+                    max_categories=max_categories,
+                    sparse_output=False,
+                ),
+            ),
+        ]
+    )
+    return ColumnTransformer(
+        [
+            ("num", numeric_pipe, numeric),
+            ("cat", categorical_pipe, categorical),
+        ]
+    )
 
 
 def get_raw_train_test(name, test_size=0.2, seed=0):
@@ -185,4 +213,3 @@ def preprocess_splits(name, X_train, *X_others):
         X_train_transformed,
         *(preprocessor.transform(X) for X in X_others),
     )
-

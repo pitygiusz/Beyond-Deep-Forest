@@ -13,6 +13,7 @@ dependencies = [
     "xgboost>=3.4.1",
     "matplotlib>=3.11.2",
     "pytest>=9.2.0",
+    "ipykernel>=7.4.0",
 ]
 
 [project.optional-dependencies]

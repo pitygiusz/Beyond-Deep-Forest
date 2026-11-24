@@ -37,6 +37,9 @@ DATASETS = {
     "ozone_level_8hr": ("openml", 1487, "target"),
     "steel_plates_fault": ("openml", 1504, "target"),
     "kc1": ("openml", 1067, "target"),
+    "credit_g": ("openml", 31, "target"),
+    "diabetes": ("openml", 37, "target"),
+    "qsar_biodeg": ("openml", 1494, "target"),
     # multiclass
     "mnist": ("openml", 554, "target"),
     "cifar10": ("openml", 40927, "target"),

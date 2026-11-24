@@ -1,58 +1,127 @@
 # Beyond Deep Forest
 
-This repository compares four cascade-forest architectures and includes other exploratory studies.
+This repository studies whether changes to the Deep Forest cascade improve
+classification performance, runtime, or stability compared with a standard
+cascade and tree-ensemble baselines. It includes the model implementations,
+experiment runners, saved benchmark results, and analysis notebooks.
 
-## Layout
+## Models
 
-- [Active IFC and projection experiment](experiments/ifc_projection/README.md) compares standard Deep Forest, fixed random nonlinear projections, an adaptation of hiDF-style interaction feature concatenation (IFC), and their combination.
-- [Other experiments](experiments/other/README.md) include outlier-pruning and transformer studies and their results.
+The [`deep_forests`](deep_forests/) package provides four scikit-learn-style
+Deep Forest classifiers:
 
-## Environment
+- **Bare** — standard cascade baseline.
+- **Projection** — adds fixed random nonlinear projections to the forest
+  inputs.
+- **IFC** — adds interaction features extracted from forest decision rules.
+- **Combined** — uses both projections and interaction features.
 
-Install [uv](https://docs.astral.sh/uv/) and use Python 3.12. The dependencies are specified in [pyproject.toml](pyproject.toml) and locked in [uv.lock](uv.lock). 
+The benchmark also compares **Random Forest** and **Extra Trees**.
+See the [method notes and architecture diagrams](deep_forests/README.md) for
+implementation details and a classifier usage example.
+
+## Repository map
+
+- [`deep_forests/`](deep_forests/) — classifier implementations, diagrams, and
+  focused tests.
+- [`experiments/run.py`](experiments/run.py) — tabular benchmark, including
+  cross-validated random search and held-out test evaluation.
+- [`experiments/run_non_tabular.py`](experiments/run_non_tabular.py) — fixed
+  Deep Forest comparisons on IMDB, MNIST, and Olivetti/ORL.
+- [`experiments/models.py`](experiments/models.py) — model definitions,
+  defaults, and search spaces.
+- [`experiments/prepare_data.py`](experiments/prepare_data.py) — dataset
+  loading, cleaning, splitting, and preprocessing.
+- [`raw_data/`](raw_data/) — checked-in source data; downloaded datasets and
+  preprocessing caches are stored here at runtime.
+- [`results/`](results/) — per-run outputs and consolidated tabular and
+  non-tabular result tables.
+- [`analysis/`](analysis/) — notebooks for aggregating results, comparing
+  models, and statistical analysis.
+
+## Setup
+
+The project targets Python 3.12 and uses [uv](https://docs.astral.sh/uv/) to
+manage the locked environment:
 
 ```bash
 uv sync --python 3.12
 ```
 
-## Run
+Some datasets are downloaded from OpenML, the UCI repository, Hugging Face, or
+scikit-learn on first use. They are cached under `raw_data/` and are not
+committed.
 
-The experiment in [experiments/run.py](experiments/run.py) runs in one command:
+## Run the tabular benchmark
 
-```bash
-uv run -m experiments.run --trials 10 --model-seeds 0 1 2 3 4
-```
-
-Each dataset gets one stratified 80/20 train/test split. For each model:
-
-1. **Random search.** The default settings and `trials - 1` random
-   configurations are scored by balanced accuracy in 3-fold stratified CV on
-   the training part. Preprocessing is fitted inside each fold; the test part
-   is not used. Search spaces are defined in
-   [experiments/models.py](experiments/models.py).
-2. **Test evaluation.** The defaults and the best configuration are fitted on
-   the whole training part, once per model seed, and scored on the test part.
-   The split stays fixed, because the best configuration was chosen on its
-   training rows.
-
-By default this covers all tabular datasets and all models (five Deep Forest
-variants, Random Forest, ExtraTrees, HistGradientBoosting). Try a small pilot
-first:
+Run all registered tabular datasets with the default settings:
 
 ```bash
-uv run -m experiments.run --datasets yeast madelon --models bare projection random_forest --trials 5
+uv run -m experiments.run
 ```
 
-Non-tabular datasets (`imdb`, `mnist`, `cifar10`, `orl`) can be added with
-`--datasets`. Other options: `--cv-folds`, `--seed`, `--test-size`, `--n-jobs`.
+Each dataset gets a stratified train/test split. For each model, the runner
+compares its default configuration with randomly sampled configurations using
+stratified cross-validation on the training split, ranking candidates by
+balanced accuracy (three folds by default). Preprocessing is fitted within
+each CV fold. The best configuration and the defaults are then evaluated on
+the held-out test split; the test data is not used for model selection.
 
-Results go to `results/run_<timestamp>/`:
+Start with a smaller run while checking the setup:
 
-- `settings.json`: the settings of the run.
-- `search.csv`: one row per candidate configuration with its CV score
-  (`candidate` 0 is the defaults).
-- `test.csv`: one row per dataset, model, parameter set (`default` / `tuned`),
-  and model seed. The `candidate` column links back to `search.csv`.
+```bash
+uv run -m experiments.run \
+  --datasets yeast madelon \
+  --models bare projection random_forest \
+  --trials 5
+```
 
-To resume an interrupted run, repeat the command with
-`--output results/run_<timestamp>`. Finished dataset/model pairs are skipped.
+Useful options include `--datasets`, `--models`, `--trials`, `--cv-folds`,
+`--model-seeds`, `--seed`, `--test-size`, `--n-jobs`, and `--output`. The
+default search uses 10 candidates, including the default configuration, and
+the default test evaluation uses model seeds 0 through 4.
+
+Each run writes `settings.json`, `search.csv`, and `test.csv` to a timestamped
+folder under `results/`. Pass `--output results/<run-folder>` to resume an
+interrupted run with the same settings; completed dataset/model pairs are
+skipped.
+
+## Run the non-tabular comparisons
+
+The dedicated runner evaluates each of the four Deep Forest variants on IMDB,
+MNIST, and ORL, using one fit per dataset and variant:
+
+```bash
+uv run -m experiments.run_non_tabular
+```
+
+For these runs, the forest configuration uses four estimators per layer and
+500 trees per estimator. Use `--datasets`, `--models`, `--seed`, `--n-jobs`,
+or `--output` to select the run configuration. Results are saved in a
+timestamped `non_tabular_*` folder under `results/`. The shared data registry
+also includes CIFAR-10, which can be selected with `experiments.run`.
+
+## Results and analysis
+
+- [`results/all_tabular_results.csv`](results/all_tabular_results.csv) and
+  [`results/all_nontabular_results.csv`](results/all_nontabular_results.csv)
+  contain consolidated benchmark results.
+- [`analysis/consolidated_analysis.ipynb`](analysis/consolidated_analysis.ipynb)
+  compares test scores, ranks and statistical tests, seed variability, tuning
+  effects, runtimes, and selected hyperparameters.
+- [`analysis/aggregate.ipynb`](analysis/aggregate.ipynb) aggregates benchmark
+  metrics and examines model gains, tuning, and runtime.
+- [`analysis/friedman.ipynb`](analysis/friedman.ipynb) focuses on the Friedman
+  test across datasets.
+
+The consolidated analysis notebook documents its tabular comparison as
+covering 20 datasets. Individual run folders retain their settings and raw
+search and test rows for reproducibility.
+
+## Tests
+
+Run the repository tests with:
+
+```bash
+uv run pytest
+```
